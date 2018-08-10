@@ -84,6 +84,7 @@ class BehatLoggerExtension implements ExtensionInterface
         $container->setDefinition('json.printer',$printerDefinition);
 
         $definition = new Definition(BehatLogFormatter::class);
+        $definition->addArgument(new Reference('mink'));
         $definition->addArgument(new Reference('json.printer'));
         $definition->addArgument($config['output_path']);
         $definition->addArgument('%mink.parameters%');
