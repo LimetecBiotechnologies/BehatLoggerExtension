@@ -86,7 +86,7 @@ class BehatLogFormatter implements Formatter
         if($event !== null) {
             $file = $this->currentSuite->getName().'.json';
             $this->printer->setOutputPath($this->output.$file);
-            $this->printer->write($this->currentSuite);
+            $this->printer->write([$this->currentSuite]);
         }
     }
 
