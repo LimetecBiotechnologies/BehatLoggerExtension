@@ -5,10 +5,16 @@ this package also provide commands to validate and merge this json files.
 
 ## Installation
 
-> Information: if you want to use the behat logger extension for your project, please read the "PHP Integration section"!
+> INFORMATION: if you want to use the behat logger extension for your project, please read the "PHP Integration" section!
 > The installation section installs only the cli-commands as standalone application
 
-TODO: npm
+### npm installation
+
+TODO
+
+### manual installation
+
+TODO
 
 ## PHP Integration
 
@@ -27,3 +33,13 @@ default:
         seretos\BehatLoggerExtension\BehatLoggerExtension:
             output_path: '%paths.base%/build/behat'
 ```
+
+> OPTIONAL: if you use an symfony application, you can add this extension (seretos\BehatLoggerExtension\BehatLoggerExtensionBundle) to your Symfony Kernel and integrate the commands in your cli
+
+## Command line usage
+
+TODO
+
+## log format
+
+TODO
