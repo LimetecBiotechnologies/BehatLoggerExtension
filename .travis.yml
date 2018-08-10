@@ -16,6 +16,7 @@ jobs:
         - composer update --prefer-source
         - vendor/bin/phpunit
     - stage: build
+      php: 7.1
       before_deploy:
         - composer install --no-dev
         - composer dump-autoload --optimize --no-dev --classmap-authoritative
