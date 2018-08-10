@@ -1,15 +1,21 @@
 language: php
 
+php:
+  - 7.1
+  - 7.2
+
+matrix:
+  includes:
+    - php: 7.1
+    - php: 7.2
+
+script:
+  - composer self-update
+  - composer update --prefer-source
+  - vendor/bin/phpunit
+
 jobs:
   include:
-    - stage: test
-      matrix:
-        - php: 7.1
-        - php: 7.2
-      script:
-        - composer self-update
-        - composer update --prefer-source
-        - vendor/bin/phpunit
     - stage: build
       php: 7.1
       script:
