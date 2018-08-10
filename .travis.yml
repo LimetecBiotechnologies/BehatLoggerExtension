@@ -3,13 +3,11 @@ language: php
 jobs:
   include:
     - stage: test
-      matrix:
-        include:
-          - php: 7.1
-          - php: 7.2
+      php: 7.1
+      php: 7.2
       script:
         - composer self-update
-        - composer update --perfer-source
+        - composer update --prefer-source
         - vendor/bin/phpunit
     - stage: build
       php: 7.1
