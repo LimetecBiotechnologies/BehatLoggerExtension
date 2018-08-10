@@ -11,24 +11,32 @@ before_script:
 
 script:
 - vendor/bin/phpunit
-- composer install --no-dev
-- composer dump-autoload --optimize --no-dev --classmap-authoritative
 
-after_success:
-- wget https://github.com/box-project/box2/releases/download/2.7.5/box-2.7.5.phar
-- mv box-2.7.5.phar box.phar
-- php -dphar.readonly=0 box.phar build -v
-- mkdir behat-logger-cli
-- cp behat-logger-cli.phar behat-logger-cli/behat-logger-cli
--
+jobs:
+  include:
+    stage: build
+    php: 7.1
+    script:
+      - composer install --no-dev
+      - composer dump-autoload --optimize --no-dev --classmap-authoritative
+      - wget https://github.com/box-project/box2/releases/download/2.7.5/box-2.7.5.phar
+      - mv box-2.7.5.phar box.phar
+      - php -dphar.readonly=0 box.phar build -v
+      - mkdir behat-logger-cli
+      - cp behat-logger-cli.phar behat-logger-cli/behat-logger-cli
+      - npm version "$TRAVIS_BRANCH"
+      - cp package.json behat-logger-cli/
+      - cp README.md behat-logger-cli/
+      - tar -zcvf behat-logger-cli.tar.gz behat-logger-cli/
 
-deploy:
-  provider: releases
-  api_key:
-    secure: Eg0gSHDw9aEFd0SBjtEdGolqIdSg62aQTts6Ss8DNTLrzi3uRAK57ktEYL/cxHqOHFzmWsnj2bn0lIpqWb8dZlPKaJmRiKVlJQQXTHbi0muKlJ0tfm5hEzjxN04toym9gp2qzJI+Nyj0H49ikulLfQIOsWapw0NbpeyFyMEnAUDjUMiYmatVrkfUXM/GDFij6kDbCCNxLfasGTNnPiCAHlu+Y/osx2DyxY05gYBigOE3V0kTPEsgeG9hKcZkuuWNp02kWbJGmW8aidSC0DF1giKSd5hBUPvEWfnJmEBy41PwQaXp+bs8DI4Dx2wrDrBIN+VfUIdfqadNWhpLt+C815IADwiasUk9m/kCSDVBAOtLRGzj1fuOsRKECOBbq3Tq9rfQsZhl10yPh43Mg990nVvK1LY8j0YCGm1hcxxeLf718NRv83BYC6Pg/hvcOXGg4H1xiWNyeYysZmW1ZBRR2iUHDW/h7lgj/v/671XXWqiARMn0v0xflUcsCy18p44gUZumZU/A3tqN8MMLBzF6Bw8osD+AfnRCDJaAT6/naY+oKTXmIAJVrDVicTc5+eNmoa2+7tjBqBi28fR82ULi3t3SjkJw3DQGvSLdzrncCPwlt9zwsPST38gCrQsI252fTBVNuuVO0gjLWN8ZHvS5ZwlAQ6lnDnZv9nkIOEFYSj8=
-  skip_cleanup: true
-  file:
-    - behat-logger-cli.phar
-  on:
-    tags: true
-    repo: Seretos/BehatLoggerExtension
+  deploy:
+    provider: releases
+    api_key:
+      secure: Eg0gSHDw9aEFd0SBjtEdGolqIdSg62aQTts6Ss8DNTLrzi3uRAK57ktEYL/cxHqOHFzmWsnj2bn0lIpqWb8dZlPKaJmRiKVlJQQXTHbi0muKlJ0tfm5hEzjxN04toym9gp2qzJI+Nyj0H49ikulLfQIOsWapw0NbpeyFyMEnAUDjUMiYmatVrkfUXM/GDFij6kDbCCNxLfasGTNnPiCAHlu+Y/osx2DyxY05gYBigOE3V0kTPEsgeG9hKcZkuuWNp02kWbJGmW8aidSC0DF1giKSd5hBUPvEWfnJmEBy41PwQaXp+bs8DI4Dx2wrDrBIN+VfUIdfqadNWhpLt+C815IADwiasUk9m/kCSDVBAOtLRGzj1fuOsRKECOBbq3Tq9rfQsZhl10yPh43Mg990nVvK1LY8j0YCGm1hcxxeLf718NRv83BYC6Pg/hvcOXGg4H1xiWNyeYysZmW1ZBRR2iUHDW/h7lgj/v/671XXWqiARMn0v0xflUcsCy18p44gUZumZU/A3tqN8MMLBzF6Bw8osD+AfnRCDJaAT6/naY+oKTXmIAJVrDVicTc5+eNmoa2+7tjBqBi28fR82ULi3t3SjkJw3DQGvSLdzrncCPwlt9zwsPST38gCrQsI252fTBVNuuVO0gjLWN8ZHvS5ZwlAQ6lnDnZv9nkIOEFYSj8=
+    skip_cleanup: true
+    file:
+      - behat-logger-cli.phar
+      - behat-logger-cli.tar.gz
+    on:
+      tags: true
+      repo: Seretos/BehatLoggerExtension
