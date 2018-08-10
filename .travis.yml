@@ -17,10 +17,7 @@ script:
 jobs:
   include:
     - stage: build
-      php: 7.1
-      on:
-        tags: true
-      script:
+      before_deploy:
         - composer install --no-dev
         - composer dump-autoload --optimize --no-dev --classmap-authoritative
         - wget https://github.com/box-project/box2/releases/download/2.7.5/box-2.7.5.phar
@@ -28,7 +25,7 @@ jobs:
         - php -dphar.readonly=0 box.phar build -v
         - mkdir behat-logger-cli
         - cp behat-logger-cli.phar behat-logger-cli/behat-logger-cli
-        #- npm version "$TRAVIS_BRANCH"
+        - npm version "$TRAVIS_BRANCH"
         - cp package.json behat-logger-cli/
         - cp README.md behat-logger-cli/
         - tar -zcvf behat-logger-cli.tar.gz behat-logger-cli/
