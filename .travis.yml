@@ -28,7 +28,10 @@ jobs:
     - cp README.md behat-logger-cli/
     - tar -zcvf behat-logger-cli.tar.gz behat-logger-cli/
     after_deploy:
-    - sleep 5 && npm publish https://github.com/Seretos/BehatLoggerExtension/releases/download/$TRAVIS_BRANCH/behat-logger-cli.tar.gz
+    - npm -v
+    - npm install -g npm@latest
+    - npm -v
+    - npm publish https://github.com/Seretos/BehatLoggerExtension/releases/download/$TRAVIS_BRANCH/behat-logger-cli.tar.gz
     deploy:
     - provider: releases
       api_key:
