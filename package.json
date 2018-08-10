@@ -1,0 +1,21 @@
+{
+  "name": "behat-logger-cli",
+  "version": "1.0.0",
+  "description": "a command line to validate behat json files",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "behat",
+    "logger"
+  ],
+  "author": "Arne von Appen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Seretos/BehatLoggerExtension/issues"
+  },
+  "bin": {
+    "behat-logger-cli": "behat-logger-cli"
+  },
+  "homepage": "https://github.com/Seretos/BehatLoggerExtension#readme"
+}

@@ -4,3 +4,7 @@ vendor/
 test.php
 test.json
 example.json
+box.phar
+behat-logger-cli.phar
+behat-logger-cli
+npm-debug.log
