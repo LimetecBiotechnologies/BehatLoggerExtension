@@ -38,9 +38,8 @@ jobs:
       on:
         tags: true
         repo: Seretos/BehatLoggerExtension
-#    - provider: npm
-#      api_key:
-#        secure: Y0H37h5zN/8io7tJLQCAf9WYldN5le8HhypLdCPnslAdmzlNWMv7A6Vgjo53JCvPHAEVyUTrf4jnJrQ8qinqDfRMvMmFsHsi/6f/GwV4qGIVbQKj4AKui0nUAlcIGpgfshd58nwwXsnzfsBuVZj6+L073R7sbX8sQVAadB+qk1pZe5SrMka9EKoPn3XNnp4OSbswzkc7Tem/3BOnA/7Wn1Gwu1oF6YB12Kj0EOkbT06U7n53jFVcgoOzFNZxjrmlKugaSMioQ1gO2E3UHjedRdFgc7l1/Og0xcB+D4BUyUD8B4rfegs+4U+pBUTdM727qPbRKxDTloVKa+4cc62RjBZ/4JIQNtHOLsbZhLj5dfj9kCocUyn7ytUC9aG91yvoBQav0PJSTJ+mA+/mcEUYZd77kav994fTu+HMl997WrJMmk4JtSaDxbwY/q93avALXSly7acULxYDHAmN/wJr7jD+JQepsoosrjVLVHibJPenmZcFdK5m/HYWK5X9FrNAftJlFRfFqFOTigiPUTn9xDZHI+c/454nS0xAdvIVwSuhGsfefl39oc4Ql5N6RzYx0yU76mS1d95ODSMz/jus5ZrfaxiUSzSbvvdyaVtc3QZglmwEksgD9L3993yrC/UDNKd3Bt595L+HgrNhMhxfBDPmBxdXWXMwVkM0P0Quv8Q=
-#      skip_cleanup: true
-#      on:
-#        tags: true
+    - provider: script
+      script: npm publish https://github.com/Seretos/BehatLoggerExtension/releases/download/$TRAVIS_BRANCH/behat-logger-cli.tar.gz
+      skip_cleanup: true
+      on:
+        tags: true
