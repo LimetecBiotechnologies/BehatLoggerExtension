@@ -18,6 +18,8 @@ jobs:
   include:
     - stage: build
       php: 7.1
+      on:
+        tags: true
       script:
         - composer install --no-dev
         - composer dump-autoload --optimize --no-dev --classmap-authoritative
@@ -30,7 +32,6 @@ jobs:
         - cp package.json behat-logger-cli/
         - cp README.md behat-logger-cli/
         - tar -zcvf behat-logger-cli.tar.gz behat-logger-cli/
-    - stage: deploy
       deploy:
         provider: releases
         api_key:
