@@ -3,8 +3,9 @@ language: php
 jobs:
   include:
     - stage: test
-      php: 7.1
-      php: 7.2
+      matrix:
+        - php: 7.1
+        - php: 7.2
       script:
         - composer self-update
         - composer update --prefer-source
