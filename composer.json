@@ -29,5 +29,8 @@
     "psr-4": {
       "seretos\\BehatLoggerExtension\\": "src/"
     }
-  }
+  },
+  "bin": [
+    "bin/behat-logger-cli"
+  ]
 }

@@ -273,6 +273,7 @@ class BehatLogFormatter implements Formatter
      */
     private function getBrowser(){
         $browser = $this->browser;
+        var_dump($this->mink);
         if(!$this->mink->getSession()->getDriver() instanceof Selenium2Driver){
             $browser = 'unknown';
         }else{
