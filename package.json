@@ -18,7 +18,7 @@
     "url": "https://github.com/Seretos/BehatLoggerExtension/issues"
   },
   "bin": {
-    "behat-logger-cli": "behat-logger-cli"
+    "behat-logger-cli": "behat-logger-cli.phar"
   },
   "publishConfig": {
     "access": "public"

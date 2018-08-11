@@ -20,10 +20,8 @@ jobs:
     - mv box-2.7.5.phar box.phar
     - php -dphar.readonly=0 box.phar build -v
     - mkdir -p behat-logger-cli
-    - cp behat-logger-cli.phar behat-logger-cli/behat-logger-cli
-    - set -e
+    - cp behat-logger-cli.phar behat-logger-cli/
     - npm version "$TRAVIS_BRANCH" || echo "set version"
-    - set +e
     - cp package.json behat-logger-cli/
     - cp README.md behat-logger-cli/
     - tar -zcvf behat-logger-cli.tar.gz behat-logger-cli/
@@ -33,6 +31,8 @@ jobs:
     - npm -v
     - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
     - npm publish https://github.com/Seretos/BehatLoggerExtension/releases/download/$TRAVIS_BRANCH/behat-logger-cli.tar.gz
+    - docker build -t seretos/behat-logger-cli .
+    - docker images
     deploy:
     - provider: releases
       api_key:

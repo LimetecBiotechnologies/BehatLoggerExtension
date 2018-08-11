@@ -10,11 +10,21 @@ this package also provide commands to validate and merge this json files.
 
 ### npm installation
 
-TODO
+```bash
+npm install behat-logger-cli -g
+```
 
 ### manual installation
 
-TODO
+1. download the latest behat-logger-cli.phar from the [github releases page](https://github.com/Seretos/BehatLoggerExtension/releases)
+2. make the phar-file executable
+
+```bash
+chmod u+x behat-logger-cli.phar
+# optional:
+mv behat-logger-cli.phar behat-logger-cli
+mv behat-logger-cli /usr/local/bin/
+```
 
 ## PHP Integration
 
