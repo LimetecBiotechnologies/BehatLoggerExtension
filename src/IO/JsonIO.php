@@ -15,9 +15,14 @@ use Symfony\Component\Filesystem\Filesystem;
 class JsonIO implements OutputPrinter
 {
     private $path;
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
 
-    public function __construct()
+    public function __construct(Filesystem $filesystem)
     {
+        $this->filesystem = $filesystem;
     }
 
     public function toJson(array $suites){
@@ -59,9 +64,8 @@ class JsonIO implements OutputPrinter
      */
     public function write($messages)
     {
-        $fileSystem = new Filesystem();
-        $fileSystem->mkdir(dirname($this->path));
-        $fileSystem->dumpFile($this->path, $this->toJson($messages));
+        $this->filesystem->mkdir(dirname($this->path));
+        $this->filesystem->dumpFile($this->path, $this->toJson($messages));
     }
 
     /**

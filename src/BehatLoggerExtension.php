@@ -11,10 +11,12 @@ use Behat\Testwork\ServiceContainer\ExtensionManager;
 use seretos\BehatLoggerExtension\Exception\BehatLoggerException;
 use seretos\BehatLoggerExtension\Formatter\BehatLogFormatter;
 use seretos\BehatLoggerExtension\IO\JsonIO;
+use seretos\BehatLoggerExtension\Service\BehatLoggerFactory;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Filesystem\Filesystem;
 
 class BehatLoggerExtension implements ExtensionInterface
 {
@@ -80,10 +82,18 @@ class BehatLoggerExtension implements ExtensionInterface
             throw new BehatLoggerException("ERROR: currently is json the only valid log format!");
         }
 
+        $filesystemDefinition = new Definition(Filesystem::class);
+        $container->setDefinition('filesystem',$filesystemDefinition);
+
         $printerDefinition = new Definition(JsonIO::class);
+        $printerDefinition->addArgument(new Reference('filesystem'));
         $container->setDefinition('json.printer',$printerDefinition);
 
+        $factoryDefinition = new Definition(BehatLoggerFactory::class);
+        $container->setDefinition('behat.logger.factory',$factoryDefinition);
+
         $definition = new Definition(BehatLogFormatter::class);
+        $definition->addArgument(new Reference('behat.logger.factory'));
         $definition->addArgument(new Reference('mink'));
         $definition->addArgument(new Reference('json.printer'));
         $definition->addArgument($config['output_path']);

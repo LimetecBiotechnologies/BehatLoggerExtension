@@ -9,28 +9,24 @@
 namespace seretos\BehatLoggerExtension\Formatter;
 
 use Behat\Behat\EventDispatcher\Event\AfterOutlineTested;
-use Behat\Behat\EventDispatcher\Event\AfterScenarioTested;
 use Behat\Behat\EventDispatcher\Event\AfterStepTested;
-use Behat\Behat\EventDispatcher\Event\BeforeFeatureTested;
 use Behat\Behat\EventDispatcher\Event\BeforeOutlineTested;
-use Behat\Behat\EventDispatcher\Event\BeforeScenarioTested;
+use Behat\Behat\EventDispatcher\Event\FeatureTested;
+use Behat\Behat\EventDispatcher\Event\ScenarioTested;
 use Behat\Gherkin\Node\BackgroundNode;
 use Behat\Gherkin\Node\ScenarioInterface;
 use Behat\Gherkin\Node\StepNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Mink\Mink;
-use Behat\Testwork\EventDispatcher\Event\AfterSuiteTested;
-use Behat\Testwork\EventDispatcher\Event\BeforeSuiteTested;
+use Behat\Testwork\EventDispatcher\Event\SuiteTested;
 use Behat\Testwork\Output\Formatter;
 use Behat\Testwork\Output\Printer\OutputPrinter;
 use ReflectionClass;
-use seretos\BehatLoggerExtension\Entity\BehatFeature;
-use seretos\BehatLoggerExtension\Entity\BehatResult;
 use seretos\BehatLoggerExtension\Entity\BehatScenario;
-use seretos\BehatLoggerExtension\Entity\BehatStep;
 use seretos\BehatLoggerExtension\Entity\BehatStepResult;
 use seretos\BehatLoggerExtension\Entity\BehatSuite;
+use seretos\BehatLoggerExtension\Service\BehatLoggerFactory;
 
 class BehatLogFormatter implements Formatter
 {
@@ -62,27 +58,33 @@ class BehatLogFormatter implements Formatter
      * @var Mink
      */
     private $mink;
+    /**
+     * @var BehatLoggerFactory
+     */
+    private $factory;
+    private $startTime = 0;
 
-    public function __construct(Mink $mink,OutputPrinter $printer, string $output, array $parameters)
+    public function __construct(BehatLoggerFactory $factory, Mink $mink,OutputPrinter $printer, string $output, array $parameters)
     {
         $this->currentSuite = null;
         $this->printer = $printer;
         $this->output = rtrim($output, '/').'/';
         $this->mink = $mink;
         $this->browser = $parameters['browser_name'];
+        $this->factory = $factory;
     }
 
     /**
-     * @param BeforeSuiteTested $event
+     * @param SuiteTested $event
      */
-    public function onBeforeSuiteTested(BeforeSuiteTested $event) {
-        $this->currentSuite = new BehatSuite($event->getSuite()->getName());
+    public function onBeforeSuiteTested(SuiteTested $event) {
+        $this->currentSuite = $this->factory->createSuite($event->getSuite()->getName());
     }
 
     /**
-     * @param AfterSuiteTested $event
+     * @param SuiteTested $event
      */
-    public function onAfterSuiteTested(AfterSuiteTested $event) {
+    public function onAfterSuiteTested(SuiteTested $event) {
         if($event !== null) {
             $file = $this->currentSuite->getName().'.json';
             $this->printer->setOutputPath($this->output.$file);
@@ -91,10 +93,10 @@ class BehatLogFormatter implements Formatter
     }
 
     /**
-     * @param BeforeFeatureTested $event
+     * @param FeatureTested $event
      */
-    public function onBeforeFeatureTested(BeforeFeatureTested $event) {
-        $feature = new BehatFeature($event->getFeature()->getFile(),
+    public function onBeforeFeatureTested(FeatureTested $event) {
+        $feature = $this->factory->createFeature($event->getFeature()->getFile(),
             $event->getFeature()->getTitle(),
             $event->getFeature()->getDescription(),
             $event->getFeature()->getLanguage());
@@ -102,13 +104,13 @@ class BehatLogFormatter implements Formatter
     }
 
     /**
-     * @param BeforeScenarioTested $event
+     * @param ScenarioTested $event
      * @throws \ReflectionException
      */
-    public function onBeforeScenarioTested(BeforeScenarioTested $event) {
+    public function onBeforeScenarioTested(ScenarioTested $event) {
         $browser = $this->getBrowser();
-        $scenario = new BehatScenario($event->getScenario()->getTitle(),$event->getScenario()->getTags());
-        $scenarioResult = new BehatResult($browser);
+        $scenario = $this->factory->createScenario($event->getScenario()->getTitle(),$event->getScenario()->getTags());
+        $scenarioResult = $this->factory->createResult($browser);
         $scenario->addResult($scenarioResult);
 
         $this->importSteps($scenario,
@@ -120,15 +122,18 @@ class BehatLogFormatter implements Formatter
         $feature->addScenario($scenario);
         $this->currentScenario = $scenario;
         $this->currentStepResults = [];
+        $this->startTime = microtime(true);
     }
 
     /**
-     * @param AfterScenarioTested $event
+     * @param ScenarioTested $event
      * @throws \ReflectionException
      */
-    public function onAfterScenarioTested(AfterScenarioTested $event) {
+    public function onAfterScenarioTested(ScenarioTested $event) {
         $browser = $this->getBrowser();
         $result = $this->currentScenario->getResult($browser);
+        $duration = microtime(true) - $this->startTime;
+        $result->setDuration($duration);
         foreach($this->currentStepResults as $stepResult){
             $result->addStepResult($stepResult);
         }
@@ -140,7 +145,7 @@ class BehatLogFormatter implements Formatter
      * @param AfterStepTested $event
      */
     public function onAfterStepTested(AfterStepTested $event) {
-        $stepResult = new BehatStepResult($event->getStep()->getLine(),$event->getTestResult()->isPassed());
+        $stepResult = $this->factory->createStepResult($event->getStep()->getLine(),$event->getTestResult()->isPassed());
         $this->currentStepResults[] = $stepResult;
     }
 
@@ -150,8 +155,8 @@ class BehatLogFormatter implements Formatter
      */
     public function onBeforeOutlineTested(BeforeOutlineTested $event) {
         $browser = $this->getBrowser();
-        $scenario = new BehatScenario($event->getOutline()->getTitle(),$event->getOutline()->getTags());
-        $scenarioResult = new BehatResult($browser);
+        $scenario = $this->factory->createScenario($event->getOutline()->getTitle(),$event->getOutline()->getTags());
+        $scenarioResult = $this->factory->createResult($browser);
         $scenario->addResult($scenarioResult);
 
         $this->importSteps($scenario,
@@ -171,9 +176,9 @@ class BehatLogFormatter implements Formatter
      */
     public function onAfterOutlineTested(AfterOutlineTested $event) {
         $browser = $this->getBrowser();
-        $result = new BehatResult($browser);
+        $result = $this->factory->createResult($browser);
         foreach($this->currentScenario->getSteps() as $step){
-            $stepResult = new BehatStepResult($step->getLine(),$event->getTestResult()->isPassed());
+            $stepResult = $this->factory->createStepResult($step->getLine(),$event->getTestResult()->isPassed());
             $result->addStepResult($stepResult);
         }
         $this->currentScenario->addResult($result);
@@ -273,7 +278,6 @@ class BehatLogFormatter implements Formatter
      */
     private function getBrowser(){
         $browser = $this->browser;
-        var_dump($this->mink);
         if($this->mink->getDefaultSessionName() === null || !$this->mink->getSession()->getDriver() instanceof Selenium2Driver){
             $browser = 'unknown';
         }else{
@@ -310,7 +314,7 @@ class BehatLogFormatter implements Formatter
                 $arguments = $argument->getRows();
             }
         }
-        $importStep = new BehatStep($step->getLine(),$step->getText(),$step->getKeyword(),$arguments);
+        $importStep = $this->factory->createStep($step->getLine(),$step->getText(),$step->getKeyword(),$arguments);
         return $importStep;
     }
 }

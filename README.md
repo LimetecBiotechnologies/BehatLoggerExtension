@@ -40,6 +40,7 @@ docker run seretos/behat-logger-cli --help
 add the package to your project as below
 ```bash
 composer require seretos/behat-logger-extension --dev
+vendor/bin/behat-logger-cli --help
 ```
 
 activate the logger in your behat.yml:
@@ -61,4 +62,87 @@ TODO
 
 ## log format
 
-TODO
+first of all, the json file contains the behat suite. if the log-writer can not detect the suite name, they use a suite named "default"
+
+```json
+{
+  "suites": [
+    {
+      "name": "default",
+      "features": {
+        ...
+      }
+    }
+  ]
+}
+```
+
+the suite contains a list of features:
+
+```json
+"features": {
+  "features\/featurefile.feature": {
+    "title": "feature title",
+    "filename": "features\/featurefile.feature",
+    "description": null,
+    "language": "en",
+    "scenarios": {
+      ...
+    }
+  },
+  ...
+}
+```
+
+and a feature contains scenarios with steps and results
+
+```json
+"scenarios": {
+  "scenariotitle": {
+    "title": "scenariotitle",
+    "tags": ["behattag1","behattag2"],
+    "steps": [
+      {
+        "line": 0,
+        "text": "the user 'test' exists",
+        "keyword": "Given",
+        "arguments": []
+      },
+      {
+        "line": 1,
+        "text": "i logged in as 'test'",
+        "keyword": "And",
+        "arguments": []
+      }
+    ],
+    "results": [
+      ...
+    ]
+  },
+  ...
+}
+```
+
+and last but not least, contains the features results. the environment property is the browser name.
+on guette the environment name is setted to "unknown"
+
+```json
+"results": [
+"firefox": {
+  "environment": "firefox",
+  "duration": "1.00"
+  "stepResults": [
+    {
+      "line": 0,
+      "passed": true,
+      "screenshot": null
+    },
+    {
+      "line": 1,
+      "passed": true,
+      "screenshot": null
+    }
+  ]
+  }
+]
+```
