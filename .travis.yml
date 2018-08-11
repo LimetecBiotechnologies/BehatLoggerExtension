@@ -3,9 +3,6 @@ php:
 - 7.1
 - 7.2
 
-services:
-- docker
-
 matrix:
   includes:
   - php: 7.1
@@ -17,6 +14,8 @@ script:
 jobs:
   include:
   - stage: build
+    services:
+    - docker
     before_deploy:
     - composer install --no-dev
     - composer dump-autoload --optimize --no-dev --classmap-authoritative

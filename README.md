@@ -26,6 +26,12 @@ mv behat-logger-cli.phar behat-logger-cli
 mv behat-logger-cli /usr/local/bin/
 ```
 
+### docker image
+
+```bash
+docker run seretos/behat-logger-cli --help
+```
+
 ## PHP Integration
 
 add the package to your project as below
