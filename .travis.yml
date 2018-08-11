@@ -31,6 +31,7 @@ jobs:
     - npm -v
     - npm install -g npm@latest
     - npm -v
+    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
     - npm publish https://github.com/Seretos/BehatLoggerExtension/releases/download/$TRAVIS_BRANCH/behat-logger-cli.tar.gz
     deploy:
     - provider: releases
