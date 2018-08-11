@@ -12,6 +12,7 @@ this package also provide commands to validate and merge this json files.
 
 ```bash
 npm install behat-logger-cli -g
+behat-logger-cli --help
 ```
 
 ### manual installation
@@ -21,9 +22,11 @@ npm install behat-logger-cli -g
 
 ```bash
 chmod u+x behat-logger-cli.phar
+php behat-logger-cli.phar --help
 # optional:
 mv behat-logger-cli.phar behat-logger-cli
 mv behat-logger-cli /usr/local/bin/
+behat-logger-cli --help
 ```
 
 ### docker image
