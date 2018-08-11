@@ -1,34 +1,24 @@
 language: php
-#php:
-#- 7.1
-#- 7.2
+php:
+- 7.1
+- 7.2
 
-#matrix:
-#  includes:
-#  - php: 7.1
-#  - php: 7.2
-#script:
-#- composer self-update
-#- composer update --prefer-source
-#- vendor/bin/phpunit
+matrix:
+  includes:
+  - php: 7.1
+  - php: 7.2
+script:
+- composer install --no-dev
+- composer dump-autoload --optimize --no-dev --classmap-authoritative
+- phpunit
+
 jobs:
   include:
-  - stage: test
-    matrix:
-      includes:
-        - php: 7.1
-        - php: 7.2
-    script:
-    - composer self-update
-    - composer update --prefer-source
-    - vendor/bin/phpunit
   - stage: build
     php: 7.2
     services:
     - docker
     before_deploy:
-    - composer install --no-dev
-    - composer dump-autoload --optimize --no-dev --classmap-authoritative
     - wget https://github.com/box-project/box2/releases/download/2.7.5/box-2.7.5.phar
     - mv box-2.7.5.phar box.phar
     - php -dphar.readonly=0 box.phar build -v
