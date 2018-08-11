@@ -36,6 +36,9 @@ jobs:
     - npm publish https://github.com/Seretos/BehatLoggerExtension/releases/download/$TRAVIS_BRANCH/behat-logger-cli.tar.gz
     - docker build -t seretos/behat-logger-cli .
     - docker images
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker tag seretos/behat-logger-cli seretos/behat-logger-cli:$TRAVIS_BRANCH
+    - docker push seretos/behat-logger-cli:$TRAVIS_BRANCH
     deploy:
     - provider: releases
       api_key:
