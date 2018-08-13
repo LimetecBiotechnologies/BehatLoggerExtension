@@ -55,6 +55,22 @@ class BehatFeature implements JsonSerializable
         return $this->filename;
     }
 
+    public function getTitle(){
+        return $this->title;
+    }
+
+    public function getDescription(){
+        return $this->description;
+    }
+
+    public function getLanguage(){
+        return $this->language;
+    }
+
+    public function hasScenario(string $title){
+        return isset($this->scenarios[$title]);
+    }
+
     public function addScenario(BehatScenario $scenario){
         $this->scenarios[$scenario->getTitle()] = $scenario;
     }

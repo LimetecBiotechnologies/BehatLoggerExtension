@@ -10,13 +10,12 @@ use Behat\Testwork\ServiceContainer\Extension as ExtensionInterface;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use seretos\BehatLoggerExtension\Exception\BehatLoggerException;
 use seretos\BehatLoggerExtension\Formatter\BehatLogFormatter;
-use seretos\BehatLoggerExtension\IO\JsonIO;
-use seretos\BehatLoggerExtension\Service\BehatLoggerFactory;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Filesystem\Filesystem;
 
 class BehatLoggerExtension implements ExtensionInterface
 {
@@ -74,7 +73,7 @@ class BehatLoggerExtension implements ExtensionInterface
      *
      * @param ContainerBuilder $container
      * @param array $config
-     * @throws BehatLoggerException
+     * @throws \Exception
      */
     public function load(ContainerBuilder $container, array $config)
     {
@@ -82,15 +81,8 @@ class BehatLoggerExtension implements ExtensionInterface
             throw new BehatLoggerException("ERROR: currently is json the only valid log format!");
         }
 
-        $filesystemDefinition = new Definition(Filesystem::class);
-        $container->setDefinition('filesystem',$filesystemDefinition);
-
-        $printerDefinition = new Definition(JsonIO::class);
-        $printerDefinition->addArgument(new Reference('filesystem'));
-        $container->setDefinition('json.printer',$printerDefinition);
-
-        $factoryDefinition = new Definition(BehatLoggerFactory::class);
-        $container->setDefinition('behat.logger.factory',$factoryDefinition);
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.yml');
 
         $definition = new Definition(BehatLogFormatter::class);
         $definition->addArgument(new Reference('behat.logger.factory'));

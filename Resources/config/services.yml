@@ -1,1 +1,14 @@
+parameters:
+  behat_logger_version: master
+
 services:
+  filesystem:
+    class: Symfony\Component\Filesystem\Filesystem
+
+  json.printer:
+    class: seretos\BehatLoggerExtension\IO\JsonIO
+    arguments: ['@filesystem']
+    public: true
+
+  behat.logger.factory:
+    class: seretos\BehatLoggerExtension\Service\BehatLoggerFactory

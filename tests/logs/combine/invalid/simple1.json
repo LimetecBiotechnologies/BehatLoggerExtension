@@ -1,0 +1,87 @@
+{
+  "suites": [
+    {
+      "name": "simple1",
+      "features": {
+        "feature1.feature": {
+          "title": "feature 1",
+          "filename": "feature1.feature",
+          "description": "this is feature one",
+          "language": "en",
+          "scenarios": {
+            "scenario 1": {
+              "title": "scenario 1",
+              "tags": [],
+              "steps": {
+                "0": {
+                  "line": 0,
+                  "text": "the user \"root\" exists",
+                  "keyword": "Given",
+                  "arguments": []
+                },
+                "1": {
+                  "line": 1,
+                  "text": "i logged in as \"root\"",
+                  "keyword": "And",
+                  "arguments": []
+                }
+              },
+              "results": {
+                "firefox": {
+                  "environment": "firefox",
+                  "stepResults": {
+                    "0": {
+                      "line": 0,
+                      "passed": true,
+                      "screenshot": null
+                    },
+                    "1": {
+                      "line": 1,
+                      "passed": true,
+                      "screenshot": null
+                    }
+                  }
+                }
+              }
+            },
+            "scenario 2": {
+              "title": "scenario 2",
+              "tags": [],
+              "steps": {
+                "0": {
+                  "line": 0,
+                  "text": "the user \"test\" exists",
+                  "keyword": "Given",
+                  "arguments": []
+                },
+                "1": {
+                  "line": 1,
+                  "text": "i logged in as \"test\"",
+                  "keyword": "And",
+                  "arguments": []
+                }
+              },
+              "results": {
+                "firefox": {
+                  "environment": "firefox",
+                  "stepResults": {
+                    "0": {
+                      "line": 0,
+                      "passed": true,
+                      "screenshot": null
+                    },
+                    "1": {
+                      "line": 1,
+                      "passed": true,
+                      "screenshot": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

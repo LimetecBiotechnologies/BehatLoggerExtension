@@ -58,7 +58,11 @@ default:
 
 ## Command line usage
 
-TODO
+combine different result jsons into one file and one suite:
+```bash
+behat-logger-cli combine:logs [suite-name] --output=/output/path/ --regex=results/firefox*
+```
+> if different jsons contain a testresult for one test with the same environment, this command throws an exception
 
 ## log format
 

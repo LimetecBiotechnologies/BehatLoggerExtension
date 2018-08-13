@@ -2,10 +2,12 @@
   "chmod": "0755",
   "directories": [
     "src",
-    "Resources"
+    "Resources",
+    "var"
   ],
   "files": [
-    "Resources/config/services.yml"
+    "Resources/config/services.yml",
+    "app/config/config.yml"
   ],
   "finder": [
     {

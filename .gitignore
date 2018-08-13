@@ -1,6 +1,7 @@
 .idea/
 composer.lock
 vendor/
+build/
 test.php
 test.json
 example.json

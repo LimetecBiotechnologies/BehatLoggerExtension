@@ -33,6 +33,14 @@ class BehatStepResult implements JsonSerializable
         return $this->line;
     }
 
+    public function isPassed(){
+        return $this->passed;
+    }
+
+    public function getScreenshot(){
+        return $this->screenshot;
+    }
+
     /**
      * Specify data which should be serialized to JSON
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php

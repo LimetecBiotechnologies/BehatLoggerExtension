@@ -44,13 +44,23 @@ class BehatScenario implements JsonSerializable
             $scenario->addStep(BehatStep::import($step));
         }
         foreach($values['results'] as $result){
-            $scenario->addResult(BehatResult::import($result));
+            if(is_array($result['stepResults']) && count($result['stepResults']) > 0) {
+                $scenario->addResult(BehatResult::import($result));
+            }
         }
         return $scenario;
     }
 
+    public function getTags(){
+        return $this->tags;
+    }
+
     public function addStep(BehatStep $step){
         $this->steps[$step->getLine()] = $step;
+    }
+
+    public function hasStep(int $line){
+        return isset($this->steps[$line]);
     }
 
     public function getStep(int $line){
@@ -63,6 +73,10 @@ class BehatScenario implements JsonSerializable
 
     public function addResult(BehatResult $result){
         $this->results[$result->getEnvironment()] = $result;
+    }
+
+    public function hasResult(string $environment){
+        return isset($this->results[$environment]);
     }
 
     public function getResult(string $environment){

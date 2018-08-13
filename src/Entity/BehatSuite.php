@@ -40,6 +40,10 @@ class BehatSuite implements JsonSerializable
         $this->features[$feature->getFilename()] = $feature;
     }
 
+    public function hasFeature(string $filename){
+        return isset($this->features[$filename]);
+    }
+
     public function getFeature(string $filename){
         return $this->features[$filename];
     }

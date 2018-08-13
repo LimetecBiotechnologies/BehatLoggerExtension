@@ -26,7 +26,9 @@ class BehatResult implements JsonSerializable
 
     public static function import(array $values){
         $result = new BehatResult($values['environment']);
-        $result->setDuration($values['duration']);
+        if(isset($values['duration'])) {
+            $result->setDuration($values['duration']);
+        }
         foreach($values['stepResults'] as $stepResult){
             $result->addStepResult(BehatStepResult::import($stepResult));
         }
@@ -37,12 +39,23 @@ class BehatResult implements JsonSerializable
         return $this->duration;
     }
 
-    public function setDuration(float $duration){
+    public function setDuration(float $duration = null){
         $this->duration = $duration;
     }
 
     public function getEnvironment(){
         return $this->environment;
+    }
+
+    /**
+     * @return BehatStepResult[]
+     */
+    public function getStepResults(){
+        return $this->stepResults;
+    }
+
+    public function hasStepResult($line){
+        return isset($this->stepResults[$line]);
     }
 
     public function addStepResult(BehatStepResult $stepResult){

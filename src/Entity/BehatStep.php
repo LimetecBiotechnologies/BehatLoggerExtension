@@ -31,6 +31,18 @@ class BehatStep implements JsonSerializable
         return $step;
     }
 
+    public function getText(){
+        return $this->text;
+    }
+
+    public function getKeyword(){
+        return $this->keyword;
+    }
+
+    public function getArguments(){
+        return $this->arguments;
+    }
+
     public function getLine(){
         return $this->line;
     }
