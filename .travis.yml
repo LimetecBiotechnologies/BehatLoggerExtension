@@ -8,8 +8,9 @@ matrix:
   - php: 7.1
   - php: 7.2
 script:
-- composer install --prefer-source
-- vendor/bin/phpunit
+- composer install --no-dev
+- composer dump-autoload --optimize --no-dev --classmap-authoritative
+- phpunit
 
 jobs:
   include:
@@ -18,8 +19,6 @@ jobs:
     services:
     - docker
     before_deploy:
-    - composer install --no-dev
-    - composer dump-autoload --optimize --no-dev --classmap-authoritative
     - npm install -g yaml-cli
     - yaml set Resources/config/services.yml parameters.behat_logger_version $TRAVIS_BRANCH > Resources/config/services2.yml
     - rm Resources/config/services.yml

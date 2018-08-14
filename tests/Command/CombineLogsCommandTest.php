@@ -19,6 +19,7 @@ class CombineLogsCommandTest extends KernelTestCase
 {
     /**
      * @test
+     * @throws Exception
      */
     public function execute_withoutError(){
         $application = new Application();
@@ -38,6 +39,7 @@ class CombineLogsCommandTest extends KernelTestCase
         ),['interactive' => false]);
 
         $output = $commandTester->getDisplay();
+        $output = str_replace('\n',PHP_EOL,$output);
 
         $this->assertContains("want to combine the following logs into ".getcwd()."/test.json
 +------------------------------------------------------------------------------+
@@ -54,6 +56,7 @@ done.",$output);
     /**
      * @test
      * @expectedException \seretos\BehatLoggerExtension\Exception\BehatLoggerException
+     * @throws Exception
      */
     public function execute_withDoubleExecution(){
         $application = new Application();
