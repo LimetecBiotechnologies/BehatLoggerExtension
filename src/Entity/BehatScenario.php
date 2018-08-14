@@ -100,6 +100,7 @@ class BehatScenario implements JsonSerializable
      */
     public function jsonSerialize()
     {
+        ksort($this->results);
         return ['title' => $this->title,'tags' => $this->tags, 'steps' => $this->steps, 'results' => $this->results];
     }
 }
