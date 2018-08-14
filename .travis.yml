@@ -23,8 +23,6 @@ jobs:
     - yaml set Resources/config/services.yml parameters.behat_logger_version $TRAVIS_BRANCH > Resources/config/services2.yml
     - rm Resources/config/services.yml
     - mv Resources/config/services2.yml Resources/config/services.yml
-    - php bin/console cache:clear --no-warmup
-    - php bin/console cache:warmup
     - wget https://github.com/box-project/box2/releases/download/2.7.5/box-2.7.5.phar
     - mv box-2.7.5.phar box.phar
     - php -dphar.readonly=0 box.phar build -v

@@ -12,7 +12,7 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-foreach (array(__DIR__ . '/../../../autoload.php',__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
+foreach (array(__DIR__ . '/../../autoload.php',__DIR__ . '/../autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
     if (file_exists($file)) {
         require $file;
 
@@ -22,7 +22,7 @@ foreach (array(__DIR__ . '/../../../autoload.php',__DIR__ . '/../../autoload.php
 
 try {
     $container = new ContainerBuilder();
-    $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+    $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/Resources/config'));
     $loader->load('services.yml');
 
     $combineLogsCommand = new CombineLogsCommand();

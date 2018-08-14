@@ -33,6 +33,6 @@
     }
   },
   "bin": [
-    "bin/behat-logger-cli"
+    "behat-logger-cli"
   ]
 }

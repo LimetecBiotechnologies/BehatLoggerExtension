@@ -2,12 +2,10 @@
   "chmod": "0755",
   "directories": [
     "src",
-    "Resources",
-    "var"
+    "Resources"
   ],
   "files": [
-    "Resources/config/services.yml",
-    "app/config/config.yml"
+    "Resources/config/services.yml"
   ],
   "finder": [
     {
@@ -15,7 +13,7 @@
       "in": "vendor"
     }
   ],
-  "main": "bin/behat-logger-cli",
+  "main": "behat-logger-cli",
   "output": "behat-logger-cli.phar",
   "stub": true
 }
