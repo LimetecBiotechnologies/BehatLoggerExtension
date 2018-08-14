@@ -41,6 +41,7 @@ class CombineLogsCommandTest extends KernelTestCase
         $output = $commandTester->getDisplay();
         $output = str_replace("\n",PHP_EOL,$output);
 
+
         $this->assertContains("want to combine the following logs into ".getcwd()."/test.json
 +------------------------------------------------------------------------------+
 | ".getcwd()."/tests/logs/combine/simple/simple2.json |
