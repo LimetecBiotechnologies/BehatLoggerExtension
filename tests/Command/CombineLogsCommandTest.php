@@ -39,15 +39,8 @@ class CombineLogsCommandTest extends KernelTestCase
         ),['interactive' => false]);
 
         $output = $commandTester->getDisplay();
-        $output = str_replace("\n",PHP_EOL,$output);
 
-
-        $this->assertContains("want to combine the following logs into ".getcwd()."/test.json
-+------------------------------------------------------------------------------+
-| ".getcwd()."/tests/logs/combine/simple/simple2.json |
-| ".getcwd()."/tests/logs/combine/simple/simple1.json |
-+------------------------------------------------------------------------------+
-done.",$output);
+        $this->assertContains("want to combine the following logs into ".getcwd()."/test.json\n+------------------------------------------------------------------------------+\n| ".getcwd()."/tests/logs/combine/simple/simple2.json |\n| ".getcwd()."/tests/logs/combine/simple/simple1.json |\n+------------------------------------------------------------------------------+\ndone.",$output);
 
         $content = file_get_contents(getcwd().'/test.json');
         $this->assertEquals('{"suites":[{"name":"test","features":{"feature1.feature":{"title":"feature 1","filename":"feature1.feature","description":"this is feature one","language":"en","scenarios":{"scenario 1":{"title":"scenario 1","tags":[],"steps":[{"line":0,"text":"the user \"root\" exists","keyword":"Given","arguments":[]},{"line":1,"text":"i logged in as \"root\"","keyword":"And","arguments":[]}],"results":{"chrome":{"environment":"chrome","stepResults":[{"line":0,"passed":true,"screenshot":null},{"line":1,"passed":true,"screenshot":null}],"duration":"0.00"},"firefox":{"environment":"firefox","stepResults":[{"line":0,"passed":true,"screenshot":null},{"line":1,"passed":true,"screenshot":null}],"duration":"0.00"}}},"scenario 2":{"title":"scenario 2","tags":[],"steps":[{"line":0,"text":"the user \"test\" exists","keyword":"Given","arguments":[]},{"line":1,"text":"i logged in as \"test\"","keyword":"And","arguments":[]}],"results":{"firefox":{"environment":"firefox","stepResults":[{"line":0,"passed":true,"screenshot":null},{"line":1,"passed":true,"screenshot":null}],"duration":"0.00"}}}}}}}]}',
