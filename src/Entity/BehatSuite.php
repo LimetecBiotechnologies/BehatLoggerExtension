@@ -65,6 +65,7 @@ class BehatSuite implements JsonSerializable
      */
     public function jsonSerialize()
     {
+        ksort($this->features);
         $result = ['name' => $this->name,'features' => $this->features];
         return $result;
     }

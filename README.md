@@ -64,6 +64,11 @@ behat-logger-cli combine:logs [suite-name] --output=/output/path/ --regex=result
 ```
 > if different jsons contain a testresult for one test with the same environment, this command throws an exception
 
+convert all found feature-files to one json-file without results:
+```bash
+behat-logger-cli feature:to:log [suite-name] --output=/output/path/ --regex=features/
+```
+
 ## log format
 
 first of all, the json file contains the behat suite. if the log-writer can not detect the suite name, they use a suite named "default"
