@@ -108,6 +108,34 @@ class FeatureToLogCommandTest extends KernelTestCase
     }
 
     /**
+     * @test
+     * @throws Exception
+     */
+    public function execute_withCommentedScenarios(){
+        $application = new Application();
+        $container = $this->getContainer();
+
+        $combineLogsCommand = new FeatureToLogCommand();
+        $combineLogsCommand->setContainer($container);
+
+        $application->add($combineLogsCommand);
+
+        $command = $application->find('feature:to:log');
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'command'  => $command->getName(),
+            'suite' => 'test','--regex'=>['tests/logs/features/commented/']
+        ),['interactive' => false]);
+
+        $output = $commandTester->getDisplay();
+
+        $this->assertContains("want to combine the following features into ".getcwd()."/test.json",$output);
+        $this->assertContains(getcwd()."/tests/logs/features/commented/feature1.feature",$output);
+        $this->assertContains("the file ".getcwd()."/tests/logs/features/commented/feature1.feature has commented scenarios",$output);
+    }
+
+    /**
      * @return ContainerBuilder
      * @throws Exception
      */

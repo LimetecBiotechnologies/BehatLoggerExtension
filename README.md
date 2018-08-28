@@ -69,6 +69,11 @@ convert all found feature-files to one json-file without results:
 behat-logger-cli feature:to:log [suite-name] --output=/output/path/ --regex=features/
 ```
 
+check that all scenarios in the log file has an unique title:
+```bash
+behat-logger-cli validate:scenario:title [log-file.json]
+```
+
 ## log format
 
 first of all, the json file contains the behat suite. if the log-writer can not detect the suite name, they use a suite named "default"
