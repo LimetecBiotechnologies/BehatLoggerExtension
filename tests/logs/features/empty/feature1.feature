@@ -1,0 +1,1 @@
+Feature: a feature without scenarios

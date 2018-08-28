@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * Created by PhpStorm.
@@ -7,6 +8,7 @@
  */
 
 use seretos\BehatLoggerExtension\Command\CombineLogsCommand;
+use seretos\BehatLoggerExtension\Command\FeatureToLogCommand;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -27,8 +29,12 @@ try {
 
     $combineLogsCommand = new CombineLogsCommand();
     $combineLogsCommand->setContainer($container);
+
+    $featureToLogCommand = new FeatureToLogCommand();
+    $featureToLogCommand->setContainer($container);
+
     $app = new Application('behat-logger-cli',$container->getParameter('behat_logger_version'));
-    $app->addCommands([$combineLogsCommand]);
+    $app->addCommands([$combineLogsCommand,$featureToLogCommand]);
 
     $app->run();
 }catch (Exception $e){

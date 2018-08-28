@@ -9,6 +9,9 @@
 namespace seretos\BehatLoggerExtension\Service;
 
 
+use Behat\Gherkin\Keywords\ArrayKeywords;
+use Behat\Gherkin\Lexer;
+use Behat\Gherkin\Parser;
 use seretos\BehatLoggerExtension\Entity\BehatFeature;
 use seretos\BehatLoggerExtension\Entity\BehatResult;
 use seretos\BehatLoggerExtension\Entity\BehatScenario;
@@ -18,6 +21,7 @@ use seretos\BehatLoggerExtension\Entity\BehatSuite;
 
 class BehatLoggerFactory
 {
+    private $keywords;
     /**
      * @param string $name
      * @return BehatSuite
@@ -73,5 +77,24 @@ class BehatLoggerFactory
      */
     public function createStep(int $line, string $text, string $keyword, array $arguments = []){
         return new BehatStep($line, $text, $keyword, $arguments);
+    }
+
+    public function getKeywords(){
+        if($this->keywords === null) {
+            $this->keywords = [];
+            if (file_exists(__DIR__ . '/../../../../behat/gherkin/i18n.php')) {
+                $this->keywords = include(__DIR__ . '/../../../../behat/gherkin/i18n.php');
+            } else if (file_exists(__DIR__ . '/../../vendor/behat/gherkin/i18n.php')) {
+                $this->keywords = include(__DIR__ . '/../../vendor/behat/gherkin/i18n.php');
+            }
+        }
+        return $this->keywords;
+    }
+
+    public function createBehatParser(){
+        $keywords = new ArrayKeywords($this->getKeywords());
+        $lexer  = new Lexer($keywords);
+        $parser = new Parser($lexer);
+        return $parser;
     }
 }
