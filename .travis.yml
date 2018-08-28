@@ -26,12 +26,14 @@ jobs:
     - wget https://github.com/box-project/box2/releases/download/2.7.5/box-2.7.5.phar
     - mv box-2.7.5.phar box.phar
     - php -dphar.readonly=0 box.phar build -v
-    - mkdir -p behat-logger-cli
-    - cp behat-logger-cli.phar behat-logger-cli/
+    - mkdir -p build/behat-logger-cli
+    - cp behat-logger-cli.phar build/behat-logger-cli/
     - npm version "$TRAVIS_BRANCH" || echo "set version"
-    - cp package.json behat-logger-cli/
-    - cp README.md behat-logger-cli/
-    - tar -zcvf behat-logger-cli.tar.gz behat-logger-cli/
+    - cp package.json build/behat-logger-cli/
+    - cp README.md build/behat-logger-cli/
+    - cd build
+    - tar -zcvf ../behat-logger-cli.tar.gz behat-logger-cli/
+    - cd ..
     after_deploy:
     - npm -v
     - npm install -g npm@latest
