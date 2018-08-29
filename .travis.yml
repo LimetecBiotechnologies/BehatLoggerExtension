@@ -20,6 +20,7 @@ jobs:
     - docker
     before_deploy:
     - npm install -g yaml-cli
+    - npm version "$TRAVIS_BRANCH" || echo "set version"
     - yaml set Resources/config/services.yml parameters.behat_logger_version $TRAVIS_BRANCH > Resources/config/services2.yml
     - rm Resources/config/services.yml
     - mv Resources/config/services2.yml Resources/config/services.yml
@@ -28,7 +29,6 @@ jobs:
     - php -dphar.readonly=0 box.phar build -v
     - mkdir -p build/behat-logger-cli
     - cp behat-logger-cli.phar build/behat-logger-cli/
-    - npm version "$TRAVIS_BRANCH" || echo "set version"
     - cp package.json build/behat-logger-cli/
     - cp README.md build/behat-logger-cli/
     - cd build

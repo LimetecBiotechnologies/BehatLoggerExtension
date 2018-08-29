@@ -55,6 +55,15 @@ class BehatScenario implements JsonSerializable
         return $this->tags;
     }
 
+    public function hasTag($tagName){
+        foreach($this->tags as $tag){
+            if($tag === $tagName){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function addStep(BehatStep $step){
         $this->steps[$step->getLine()] = $step;
     }
