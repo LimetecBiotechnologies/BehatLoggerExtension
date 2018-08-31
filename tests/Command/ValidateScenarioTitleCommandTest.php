@@ -41,6 +41,7 @@ class ValidateScenarioTitleCommandTest extends KernelTestCase
         $output = $commandTester->getDisplay();
 
         $this->assertContains("done.",$output);
+        $this->assertEquals(0,$commandTester->getStatusCode());
     }
 
     /**
@@ -68,6 +69,7 @@ class ValidateScenarioTitleCommandTest extends KernelTestCase
 
         $this->assertContains("a scenario in file feature1.feature has no title!",$output);
         $this->assertContains("done.",$output);
+        $this->assertEquals(-1,$commandTester->getStatusCode());
     }
 
     /**
@@ -94,6 +96,7 @@ class ValidateScenarioTitleCommandTest extends KernelTestCase
         $output = $commandTester->getDisplay();
         $this->assertContains("the scenario first scenario in first feature in file feature2.feature is already defined in another feature file!",$output);
         $this->assertContains("done.",$output);
+        $this->assertEquals(-1,$commandTester->getStatusCode());
     }
 
     /**

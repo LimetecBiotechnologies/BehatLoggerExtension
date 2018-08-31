@@ -1,7 +1,7 @@
 .idea/
 composer.lock
 vendor/
-build/
+build
 test.php
 test.json
 example.json

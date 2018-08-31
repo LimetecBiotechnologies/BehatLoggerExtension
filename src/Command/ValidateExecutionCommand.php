@@ -39,6 +39,10 @@ class ValidateExecutionCommand extends ContainerAwareCommand
                 foreach($feature->getScenarios() as $scenario){
                     if($this->checkScenarioTags($scenario,$input->getOption('tags'))) {
                         $actualScenario = $this->findScenario($actualSuites, $scenario->getTitle());
+                        if(count($actualScenario->getResults()) === 0){
+                            $output->writeln('the scenario "'.$scenario->getTitle().'" has no environments!');
+                            $err = -1;
+                        }
                         foreach($input->getOption('environments') as $environment){
                             if(!$actualScenario->hasResult($environment)){
                                 $output->writeln('the scenario "'.$scenario->getTitle().'" was not executed on environment '.$environment.'!');
@@ -49,6 +53,8 @@ class ValidateExecutionCommand extends ContainerAwareCommand
                 }
             }
         }
+
+        $output->writeln('done.');
 
         return $err;
     }
