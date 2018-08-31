@@ -32,7 +32,7 @@ behat-logger-cli --help
 ### docker image
 
 ```bash
-docker run seretos/behat-logger-cli --help
+docker run -v /path/to/logs/:/behat/ seretos/behat-logger-cli --help
 ```
 
 ## PHP Integration
