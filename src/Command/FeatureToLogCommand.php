@@ -68,7 +68,9 @@ class FeatureToLogCommand extends ContainerAwareCommand
 
                 foreach($feature->getScenarios() as $scenario){
                     if(!$behatFeature->hasScenario($scenario->getTitle())){
-                        $behatScenario = $factory->createScenario($scenario->getTitle(),$scenario->getTags());
+                        $tags = $scenario->getTags();
+                        $tags = array_merge($tags,$feature->getTags());
+                        $behatScenario = $factory->createScenario($scenario->getTitle(),$tags);
                         $behatFeature->addScenario($behatScenario);
                     }else{
                         $output->writeln('<error>the scenario '.$scenario->getTitle().' is defined more then once</error>');
