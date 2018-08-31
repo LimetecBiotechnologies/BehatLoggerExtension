@@ -74,6 +74,14 @@ check that all scenarios in the log file has an unique title:
 behat-logger-cli validate:scenario:title [log-file.json]
 ```
 
+check that all tests are executed in the given environments:
+```bash
+# check that all browserless tests are executed
+behat-logger-cli validate:execution actual.json expected.json --tags=~javascript --environments=unknown
+# check that all browser tests are executed in firefox and chrome
+behat-logger-cli validate:execution actual.json expected.json --tags=javascript --environments=firefox --environments=chrome
+```
+
 ## log format
 
 first of all, the json file contains the behat suite. if the log-writer can not detect the suite name, they use a suite named "default"

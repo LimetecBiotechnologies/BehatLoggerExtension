@@ -43,12 +43,19 @@ class ValidateExecutionCommand extends ContainerAwareCommand
                             $output->writeln('the scenario "'.$scenario->getTitle().'" has no environments!');
                             $err = -1;
                         }
+                        $accepted = true;
                         foreach($input->getOption('environments') as $environment){
                             if(!$actualScenario->hasResult($environment)){
                                 $output->writeln('the scenario "'.$scenario->getTitle().'" was not executed on environment '.$environment.'!');
                                 $err = -1;
+                                $accepted = false;
                             }
                         }
+                        if($accepted){
+                            $output->writeln('<info>the scenario "'.$scenario->getTitle().'" was executed on all required environments ('.implode(",",$input->getOption('environments')).')</info>',OutputInterface::VERBOSITY_VERBOSE);
+                        }
+                    }else{
+                        $output->writeln('<info>the scenario "'.$scenario->getTitle().'" are skipped</info>',OutputInterface::VERBOSITY_VERBOSE);
                     }
                 }
             }
@@ -114,11 +121,11 @@ The <info>%command.name%</info> check that all tests are executed
 
 Example (<comment>1</comment>): <info>check all tests without the tags "javascript" and "nightly" are executed in environment unknown</info>
 
-    $ %command.full_name% actual.json expected.json --tags=~javascript --tags=~nightly --environments=unknown
+    $ %command.full_name% expected.json actual.json --tags=~javascript --tags=~nightly --environments=unknown
 
 Example (<comment>2</comment>): <info>check all tests with the tag "javascript" and without "nightly" are executed in environment firefox and chrome</info>
 
-    $ %command.full_name% actual.json expected.json --tags=javascript --tags=~nightly --environments=firefox --environments=chrome
+    $ %command.full_name% expected.json actual.json --tags=javascript --tags=~nightly --environments=firefox --environments=chrome
 EOT
             );
     }
