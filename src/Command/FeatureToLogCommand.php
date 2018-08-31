@@ -69,7 +69,9 @@ class FeatureToLogCommand extends ContainerAwareCommand
                 foreach($feature->getScenarios() as $scenario){
                     if(!$behatFeature->hasScenario($scenario->getTitle())){
                         $tags = $scenario->getTags();
-                        $tags = array_merge($tags,$feature->getTags());
+                        if(is_array($feature->getTags())) {
+                            $tags = array_merge($tags, $feature->getTags());
+                        }
                         $behatScenario = $factory->createScenario($scenario->getTitle(),$tags);
                         $behatFeature->addScenario($behatScenario);
                     }else{

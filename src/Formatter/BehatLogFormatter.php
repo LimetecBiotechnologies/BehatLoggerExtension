@@ -110,7 +110,9 @@ class BehatLogFormatter implements Formatter
     public function onBeforeScenarioTested(ScenarioTested $event) {
         $browser = $this->getBrowser();
         $tags = $event->getScenario()->getTags();
-        $tags = array_merge($tags,$event->getFeature()->getTags());
+        if(is_array($event->getFeature()->getTags())) {
+            $tags = array_merge($tags, $event->getFeature()->getTags());
+        }
         $scenario = $this->factory->createScenario($event->getScenario()->getTitle(),$tags);
         $scenarioResult = $this->factory->createResult($browser);
         $scenario->addResult($scenarioResult);
