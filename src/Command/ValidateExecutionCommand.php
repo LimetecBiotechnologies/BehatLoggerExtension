@@ -39,20 +39,25 @@ class ValidateExecutionCommand extends ContainerAwareCommand
                 foreach($feature->getScenarios() as $scenario){
                     if($this->checkScenarioTags($scenario,$input->getOption('tags'))) {
                         $actualScenario = $this->findScenario($actualSuites, $scenario->getTitle());
-                        if(count($actualScenario->getResults()) === 0){
-                            $output->writeln('the scenario "'.$scenario->getTitle().'" has no environments!');
+                        if($actualScenario === null){
+                            $output->writeln('the scenario "'.$scenario->getTitle().'" was not executed!');
                             $err = -1;
                         }
-                        $accepted = true;
-                        foreach($input->getOption('environments') as $environment){
-                            if(!$actualScenario->hasResult($environment)){
-                                $output->writeln('the scenario "'.$scenario->getTitle().'" was not executed on environment '.$environment.'!');
-                                $err = -1;
-                                $accepted = false;
+                        else if(count($actualScenario->getResults()) === 0){
+                            $output->writeln('the scenario "'.$scenario->getTitle().'" has no environments!');
+                            $err = -1;
+                        }else {
+                            $accepted = true;
+                            foreach ($input->getOption('environments') as $environment) {
+                                if (!$actualScenario->hasResult($environment)) {
+                                    $output->writeln('the scenario "' . $scenario->getTitle() . '" was not executed on environment ' . $environment . '!');
+                                    $err = -1;
+                                    $accepted = false;
+                                }
                             }
-                        }
-                        if($accepted){
-                            $output->writeln('<info>the scenario "'.$scenario->getTitle().'" was executed on all required environments ('.implode(",",$input->getOption('environments')).')</info>',OutputInterface::VERBOSITY_VERBOSE);
+                            if ($accepted) {
+                                $output->writeln('<info>the scenario "' . $scenario->getTitle() . '" was executed on all required environments (' . implode(",", $input->getOption('environments')) . ')</info>', OutputInterface::VERBOSITY_VERBOSE);
+                            }
                         }
                     }else{
                         $output->writeln('<info>the scenario "'.$scenario->getTitle().'" are skipped</info>',OutputInterface::VERBOSITY_VERBOSE);

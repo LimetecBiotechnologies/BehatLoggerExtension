@@ -1,0 +1,199 @@
+{
+  "suites": [
+    {
+      "name": "test",
+      "features": {
+        "feature1.feature": {
+          "title": "first test feature",
+          "filename": "feature1.feature",
+          "description": "this is the first test feature",
+          "language": "en",
+          "scenarios": {
+            "first scenario in first feature": {
+              "title": "first scenario in first feature",
+              "tags": [],
+              "steps": {
+                "5": {
+                  "line": 5,
+                  "text": "The user \"test\" exists",
+                  "keyword": "Given",
+                  "arguments": []
+                },
+                "6": {
+                  "line": 6,
+                  "text": "i logged in as \"test\"",
+                  "keyword": "And",
+                  "arguments": []
+                },
+                "7": {
+                  "line": 7,
+                  "text": "i click button one",
+                  "keyword": "When",
+                  "arguments": []
+                },
+                "8": {
+                  "line": 8,
+                  "text": "i should see the text \"blubb\"",
+                  "keyword": "Then",
+                  "arguments": []
+                }
+              },
+              "results": {
+                "firefox": {
+                  "environment": "firefox",
+                  "stepResults": {
+                    "5": {
+                      "line": 5,
+                      "passed": true,
+                      "screenshot": null
+                    },
+                    "6": {
+                      "line": 6,
+                      "passed": true,
+                      "screenshot": null
+                    },
+                    "7": {
+                      "line": 7,
+                      "passed": true,
+                      "screenshot": null
+                    },
+                    "8": {
+                      "line": 8,
+                      "passed": true,
+                      "screenshot": null
+                    }
+                  },
+                  "duration": "9.06"
+                }
+              }
+            },
+            "second scenario in first feature": {
+              "title": "second scenario in first feature",
+              "tags": [],
+              "steps": {
+                "11": {
+                  "line": 11,
+                  "text": "The user \"test2\" exists",
+                  "keyword": "Given",
+                  "arguments": []
+                },
+                "12": {
+                  "line": 12,
+                  "text": "i logged in as \"test2\"",
+                  "keyword": "And",
+                  "arguments": []
+                },
+                "13": {
+                  "line": 13,
+                  "text": "i click button one",
+                  "keyword": "When",
+                  "arguments": []
+                },
+                "14": {
+                  "line": 14,
+                  "text": "i should see the text \"bla\"",
+                  "keyword": "Then",
+                  "arguments": []
+                }
+              },
+              "results": {
+                "firefox": {
+                  "environment": "firefox",
+                  "stepResults": {
+                    "11": {
+                      "line": 11,
+                      "passed": true,
+                      "screenshot": null
+                    },
+                    "12": {
+                      "line": 12,
+                      "passed": true,
+                      "screenshot": null
+                    },
+                    "13": {
+                      "line": 13,
+                      "passed": true,
+                      "screenshot": null
+                    },
+                    "14": {
+                      "line": 14,
+                      "passed": true,
+                      "screenshot": null
+                    }
+                  },
+                  "duration": "9.06"
+                }
+              }
+            }
+          }
+        },
+        "feature2.feature": {
+          "title": "second test feature",
+          "filename": "feature2.feature",
+          "description": "this is the second test feature",
+          "language": "en",
+          "scenarios": {
+            "first scenario in second feature": {
+              "title": "first scenario in second feature",
+              "tags": [],
+              "steps": {
+                "5": {
+                  "line": 5,
+                  "text": "The user \"test\" exists",
+                  "keyword": "Given",
+                  "arguments": []
+                },
+                "6": {
+                  "line": 6,
+                  "text": "i logged in as \"test\"",
+                  "keyword": "And",
+                  "arguments": []
+                },
+                "7": {
+                  "line": 7,
+                  "text": "i click button one",
+                  "keyword": "When",
+                  "arguments": []
+                },
+                "8": {
+                  "line": 8,
+                  "text": "i should see the text \"blubb\"",
+                  "keyword": "Then",
+                  "arguments": []
+                }
+              },
+              "results": {
+                "firefox": {
+                  "environment": "firefox",
+                  "stepResults": {
+                    "5": {
+                      "line": 5,
+                      "passed": true,
+                      "screenshot": null
+                    },
+                    "6": {
+                      "line": 6,
+                      "passed": true,
+                      "screenshot": null
+                    },
+                    "7": {
+                      "line": 7,
+                      "passed": true,
+                      "screenshot": null
+                    },
+                    "8": {
+                      "line": 8,
+                      "passed": true,
+                      "screenshot": null
+                    }
+                  },
+                  "duration": "9.06"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

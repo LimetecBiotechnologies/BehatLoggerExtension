@@ -81,6 +81,35 @@ class ValidateExecutionCommandTest extends KernelTestCase
      * @test
      * @throws Exception
      */
+    public function execute_notExecuted(){
+        $application = new Application();
+        $container = $this->getContainer();
+
+        $combineLogsCommand = new ValidateExecutionCommand();
+        $combineLogsCommand->setContainer($container);
+
+        $application->add($combineLogsCommand);
+
+        $command = $application->find('validate:execution');
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(array(
+            'command'  => $command->getName(),
+            'expected-file' => 'tests/logs/execution/expected/simple.json',
+            'actual-file' => 'tests/logs/execution/actual/simple_not_executed.json'
+        ),['interactive' => false]);
+
+        $output = $commandTester->getDisplay();
+
+        $this->assertContains("the scenario \"second scenario in second feature\" was not executed!",$output);
+        $this->assertContains("done.",$output);
+        $this->assertEquals(-1,$commandTester->getStatusCode());
+    }
+
+    /**
+     * @test
+     * @throws Exception
+     */
     public function execute_withInvalidEnvironment(){
         $application = new Application();
         $container = $this->getContainer();
