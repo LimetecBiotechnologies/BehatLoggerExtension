@@ -9,6 +9,7 @@
 
 use seretos\BehatLoggerExtension\Command\CombineLogsCommand;
 use seretos\BehatLoggerExtension\Command\FeatureToLogCommand;
+use seretos\BehatLoggerExtension\Command\TestRailPushCommand;
 use seretos\BehatLoggerExtension\Command\ValidateExecutionCommand;
 use seretos\BehatLoggerExtension\Command\ValidateScenarioTitleCommand;
 use Symfony\Component\Config\FileLocator;
@@ -41,8 +42,15 @@ try {
     $validateExecutionCommand = new ValidateExecutionCommand();
     $validateExecutionCommand->setContainer($container);
 
+    $testRailPushCommand = new TestRailPushCommand();
+    $testRailPushCommand->setContainer($container);
+
     $app = new Application('behat-logger-cli',$container->getParameter('behat_logger_version'));
-    $app->addCommands([$combineLogsCommand,$featureToLogCommand,$validateScenarioTitleCommand, $validateExecutionCommand]);
+    $app->addCommands([$combineLogsCommand,
+        $featureToLogCommand,
+        $validateScenarioTitleCommand,
+        $validateExecutionCommand,
+        $testRailPushCommand]);
 
     $app->run();
 }catch (Exception $e){

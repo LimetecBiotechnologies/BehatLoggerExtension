@@ -8,3 +8,4 @@ example.json
 box.phar
 behat-logger-cli.phar
 npm-debug.log
+.testrail.yml
