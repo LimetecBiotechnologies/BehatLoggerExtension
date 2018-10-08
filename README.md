@@ -82,6 +82,37 @@ behat-logger-cli validate:execution actual.json expected.json --tags=~javascript
 behat-logger-cli validate:execution actual.json expected.json --tags=javascript --environments=firefox --environments=chrome
 ```
 
+send a json-result to testrail and create sections and cases
+```bash
+behat-logger-cli testrail:push:cases testRailSuiteName actual.json
+```
+
+send a json-result to testrail and create results
+```bash
+behat-logger-cli testrail:push:results testRailSuiteName actual.json testResultName --milestone=v2.8.0
+```
+
+the commands testrail:push:cases and testrail:push:results requires an .testrail.yml in the current work directory with the following informations:
+```yml
+api:
+  server: https://yourTestrail.testrail.io/
+  user: yourUser@mail.de
+  password: yourPassword
+  project: youtProject
+  template: Test Case (Steps)
+  type: Automated
+  identifier: custom_preconds
+  run_group_field: custom_automation_type
+
+# set field an priorities on specific tags
+fields:
+  /^.*$/:
+    custom_automation_type: Behat
+
+priorities:
+  /^priority_low$/: Low
+```
+
 ## log format
 
 first of all, the json file contains the behat suite. if the log-writer can not detect the suite name, they use a suite named "default"
