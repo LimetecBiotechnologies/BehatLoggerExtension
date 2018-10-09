@@ -104,6 +104,10 @@ class TestRailResultImporter extends AbstractTestRail
         return $this->planApi->get($plan['id']);
     }
 
+    public function closePlan(int $planId){
+        $this->planApi->close($planId);
+    }
+
     /**
      * @param BehatScenario $scenario
      * @param BehatFeature $feature

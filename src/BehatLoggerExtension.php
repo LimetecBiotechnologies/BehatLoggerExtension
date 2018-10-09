@@ -10,6 +10,7 @@ use Behat\Testwork\ServiceContainer\Extension as ExtensionInterface;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use seretos\BehatLoggerExtension\Exception\BehatLoggerException;
 use seretos\BehatLoggerExtension\Formatter\BehatLogFormatter;
+use seretos\BehatLoggerExtension\Service\ScreenshotPrinter;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -84,10 +85,14 @@ class BehatLoggerExtension implements ExtensionInterface
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
+        $screenshotPrinterDefinition = new Definition(ScreenshotPrinter::class);
+        $container->setDefinition('behat.logger.screenshot',$screenshotPrinterDefinition);
+
         $definition = new Definition(BehatLogFormatter::class);
         $definition->addArgument(new Reference('behat.logger.factory'));
         $definition->addArgument(new Reference('mink'));
         $definition->addArgument(new Reference('json.printer'));
+        $definition->addArgument(new Reference('behat.logger.screenshot'));
         $definition->addArgument($config['output_path']);
         $definition->addArgument('%mink.parameters%');
         $container->setDefinition("log.formatter", $definition)

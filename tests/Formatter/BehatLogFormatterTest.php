@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use seretos\BehatLoggerExtension\Formatter\BehatLogFormatter;
 use seretos\BehatLoggerExtension\IO\JsonIO;
 use seretos\BehatLoggerExtension\Service\BehatLoggerFactory;
+use seretos\BehatLoggerExtension\Service\ScreenshotPrinter;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -44,6 +45,10 @@ class BehatLogFormatterTest extends TestCase
      */
     private $filesystemMock;
     /**
+     * @var ScreenshotPrinter|PHPUnit_Framework_MockObject_MockObject
+     */
+    private $screenshotPrinterMock;
+    /**
      * @var array
      */
     private $parameters = ['browser_name' => 'test'];
@@ -59,10 +64,12 @@ class BehatLogFormatterTest extends TestCase
 
         $this->filesystemMock = $this->getMockBuilder(Filesystem::class)->disableOriginalConstructor()->getMock();
 
+        $this->screenshotPrinterMock = $this->getMockBuilder(ScreenshotPrinter::class)->disableOriginalConstructor()->getMock();
+
         $this->factory = new BehatLoggerFactory();
         $this->printer = new JsonIO($this->filesystemMock);
 
-        $this->formatter = new BehatLogFormatter($this->factory, $this->minkMock, $this->printer, $this->output, $this->parameters);
+        $this->formatter = new BehatLogFormatter($this->factory, $this->minkMock, $this->printer, $this->screenshotPrinterMock, $this->output, $this->parameters);
     }
 
     /**

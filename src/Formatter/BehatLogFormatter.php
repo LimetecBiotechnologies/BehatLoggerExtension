@@ -27,6 +27,7 @@ use seretos\BehatLoggerExtension\Entity\BehatScenario;
 use seretos\BehatLoggerExtension\Entity\BehatStepResult;
 use seretos\BehatLoggerExtension\Entity\BehatSuite;
 use seretos\BehatLoggerExtension\Service\BehatLoggerFactory;
+use seretos\BehatLoggerExtension\Service\ScreenshotPrinter;
 
 class BehatLogFormatter implements Formatter
 {
@@ -63,8 +64,12 @@ class BehatLogFormatter implements Formatter
      */
     private $factory;
     private $startTime = 0;
+    /**
+     * @var ScreenshotPrinter
+     */
+    private $screenshotPrinter;
 
-    public function __construct(BehatLoggerFactory $factory, Mink $mink,OutputPrinter $printer, string $output, array $parameters)
+    public function __construct(BehatLoggerFactory $factory, Mink $mink,OutputPrinter $printer, ScreenshotPrinter $screenshotPrinter, string $output, array $parameters)
     {
         $this->currentSuite = null;
         $this->printer = $printer;
@@ -72,6 +77,7 @@ class BehatLogFormatter implements Formatter
         $this->mink = $mink;
         $this->browser = $parameters['browser_name'];
         $this->factory = $factory;
+        $this->screenshotPrinter = $screenshotPrinter;
     }
 
     /**
@@ -149,7 +155,14 @@ class BehatLogFormatter implements Formatter
      * @param AfterStepTested $event
      */
     public function onAfterStepTested(AfterStepTested $event) {
-        $stepResult = $this->factory->createStepResult($event->getStep()->getLine(),$event->getTestResult()->isPassed());
+        $file = null;
+        if(!$event->getTestResult()->isPassed()
+            && $event->getTestResult()->getResultCode() == 99
+            && $this->mink->getSession()->getDriver() instanceof Selenium2Driver){
+            $screenshot = $this->mink->getSession()->getScreenshot();
+            $file = $this->screenshotPrinter->takeScreenshot($this->output,$this->browser,$screenshot);
+        }
+        $stepResult = $this->factory->createStepResult($event->getStep()->getLine(),$event->getTestResult()->isPassed(),$file);
         $this->currentStepResults[] = $stepResult;
     }
 

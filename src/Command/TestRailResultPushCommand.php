@@ -85,6 +85,8 @@ EOT
             }
         }
 
+        $importer->closePlan($plan['id']);
+
         return 0;
     }
 
