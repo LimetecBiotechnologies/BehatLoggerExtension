@@ -87,6 +87,11 @@ send a json-result to testrail and create sections and cases
 behat-logger-cli testrail:push:cases testRailSuiteName actual.json
 ```
 
+send a json-result to testrail and create environment configurations:
+```bash
+behat-logger-cli testrail:push:configs testRailSuiteName actual.json
+```
+
 send a json-result to testrail and create results
 ```bash
 behat-logger-cli testrail:push:results testRailSuiteName actual.json testResultName --milestone=v2.8.0
