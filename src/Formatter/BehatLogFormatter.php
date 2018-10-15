@@ -176,8 +176,6 @@ class BehatLogFormatter implements Formatter
 
         if($result instanceof UndefinedStepResult){
             $message = 'undefined step '.$event->getStep()->getText();
-        }else if($result instanceof SkippedStepResult){
-            $message = 'step skipped!';
         }else if($result instanceof ExecutedStepResult){
             if($result->getException()){
                 $message = $result->getException()->getMessage();
@@ -185,6 +183,9 @@ class BehatLogFormatter implements Formatter
                 $message = $result->getCallResult()->getStdOut();
             }
         }
+        //else if($result instanceof SkippedStepResult){
+        //    $message = 'step skipped!';
+        //}
 
         $stepResult = $this->factory->createStepResult($event->getStep()->getLine(),$event->getTestResult()->isPassed(),$file,$message);
         $this->currentStepResults[] = $stepResult;
