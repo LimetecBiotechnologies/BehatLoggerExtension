@@ -188,17 +188,20 @@ on guette the environment name is setted to "unknown"
 "results": [
 "firefox": {
   "environment": "firefox",
-  "duration": "1.00"
+  "duration": "1.00",
+  "message": null,
   "stepResults": [
     {
       "line": 0,
       "passed": true,
-      "screenshot": null
+      "screenshot": null,
+      "message": null
     },
     {
       "line": 1,
       "passed": true,
-      "screenshot": null
+      "screenshot": null,
+      "message": null
     }
   ]
   }
