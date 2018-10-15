@@ -138,7 +138,7 @@ class TestRailResultImporter extends AbstractTestRail
             if($this->isResultPassed($result)){
                 $state = $this->passedStateId;
             }
-            $this->resultApi->create($currentRun,$case['id'],$state,['custom_step_results' => $this->getStepResults($scenario,$result)]);
+            $this->resultApi->create($currentRun,$case['id'],$state,['custom_step_results' => $this->getStepResults($scenario,$result),'comment' => $result->getMessage()]);
         }
     }
 
