@@ -13,6 +13,9 @@ use Behat\Behat\EventDispatcher\Event\AfterStepTested;
 use Behat\Behat\EventDispatcher\Event\BeforeOutlineTested;
 use Behat\Behat\EventDispatcher\Event\FeatureTested;
 use Behat\Behat\EventDispatcher\Event\ScenarioTested;
+use Behat\Behat\Tester\Result\ExecutedStepResult;
+use Behat\Behat\Tester\Result\SkippedStepResult;
+use Behat\Behat\Tester\Result\UndefinedStepResult;
 use Behat\Gherkin\Node\BackgroundNode;
 use Behat\Gherkin\Node\ScenarioInterface;
 use Behat\Gherkin\Node\StepNode;
@@ -54,6 +57,10 @@ class BehatLogFormatter implements Formatter
     /**
      * @var string
      */
+    private $message;
+    /**
+     * @var string
+     */
     private $browser;
     /**
      * @var Mink
@@ -69,11 +76,12 @@ class BehatLogFormatter implements Formatter
      */
     private $screenshotPrinter;
 
-    public function __construct(BehatLoggerFactory $factory, Mink $mink,OutputPrinter $printer, ScreenshotPrinter $screenshotPrinter, string $output, array $parameters)
+    public function __construct(BehatLoggerFactory $factory, Mink $mink,OutputPrinter $printer, ScreenshotPrinter $screenshotPrinter, string $output, string $message, array $parameters)
     {
         $this->currentSuite = null;
         $this->printer = $printer;
         $this->output = rtrim($output, '/').'/';
+        $this->message = $message;
         $this->mink = $mink;
         $this->browser = $parameters['browser_name'];
         $this->factory = $factory;
@@ -120,7 +128,7 @@ class BehatLogFormatter implements Formatter
             $tags = array_merge($tags, $event->getFeature()->getTags());
         }
         $scenario = $this->factory->createScenario($event->getScenario()->getTitle(),$tags);
-        $scenarioResult = $this->factory->createResult($browser);
+        $scenarioResult = $this->factory->createResult($browser,$this->message);
         $scenario->addResult($scenarioResult);
 
         $this->importSteps($scenario,
@@ -156,13 +164,29 @@ class BehatLogFormatter implements Formatter
      */
     public function onAfterStepTested(AfterStepTested $event) {
         $file = null;
+        $message = null;
         if(!$event->getTestResult()->isPassed()
             && $event->getTestResult()->getResultCode() == 99
             && $this->mink->getSession()->getDriver() instanceof Selenium2Driver){
             $screenshot = $this->mink->getSession()->getScreenshot();
             $file = $this->screenshotPrinter->takeScreenshot($this->output,$this->browser,$screenshot);
         }
-        $stepResult = $this->factory->createStepResult($event->getStep()->getLine(),$event->getTestResult()->isPassed(),$file);
+
+        $result = $event->getTestResult();
+
+        if($result instanceof UndefinedStepResult){
+            $message = 'undefined step '.$event->getStep()->getText();
+        }else if($result instanceof SkippedStepResult){
+            $message = 'step skipped!';
+        }else if($result instanceof ExecutedStepResult){
+            if($result->getException()){
+                $message = $result->getException()->getMessage();
+            }else{
+                $message = $result->getCallResult()->getStdOut();
+            }
+        }
+
+        $stepResult = $this->factory->createStepResult($event->getStep()->getLine(),$event->getTestResult()->isPassed(),$file,$message);
         $this->currentStepResults[] = $stepResult;
     }
 

@@ -33,12 +33,14 @@
                     "0": {
                       "line": 0,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     },
                     "1": {
                       "line": 1,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     }
                   }
                 }
@@ -68,12 +70,14 @@
                     "0": {
                       "line": 0,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     },
                     "1": {
                       "line": 1,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     }
                   }
                 }

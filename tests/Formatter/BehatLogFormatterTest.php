@@ -69,7 +69,7 @@ class BehatLogFormatterTest extends TestCase
         $this->factory = new BehatLoggerFactory();
         $this->printer = new JsonIO($this->filesystemMock);
 
-        $this->formatter = new BehatLogFormatter($this->factory, $this->minkMock, $this->printer, $this->screenshotPrinterMock, $this->output, $this->parameters);
+        $this->formatter = new BehatLogFormatter($this->factory, $this->minkMock, $this->printer, $this->screenshotPrinterMock, $this->output,'', $this->parameters);
     }
 
     /**
@@ -163,7 +163,7 @@ class BehatLogFormatterTest extends TestCase
         $this->minkMock->expects($this->any())->method('getDefaultSessionName')->will($this->returnValue(null));
 
         $this->filesystemMock->expects($this->once())->method('mkdir')->with('.');
-        $this->filesystemMock->expects($this->once())->method('dumpFile')->with('./default.json','{"suites":[{"name":"default","features":{"feature.file":{"title":"feature title","filename":"feature.file","description":null,"language":"en","scenarios":{"scenario title":{"title":"scenario title","tags":["tag1","tag2"],"steps":[],"results":{"unknown":{"environment":"unknown","stepResults":[],"duration":"0.00"}}}}}}}]}');
+        $this->filesystemMock->expects($this->once())->method('dumpFile')->with('./default.json','{"suites":[{"name":"default","features":{"feature.file":{"title":"feature title","filename":"feature.file","description":null,"language":"en","scenarios":{"scenario title":{"title":"scenario title","tags":["tag1","tag2"],"steps":[],"results":{"unknown":{"environment":"unknown","stepResults":[],"duration":"0.00","message":""}}}}}}}]}');
 
         $this->formatter->onBeforeSuiteTested($suiteEventMock);
         $this->formatter->onBeforeFeatureTested($featureEventMock);
@@ -216,7 +216,7 @@ class BehatLogFormatterTest extends TestCase
         $this->minkMock->expects($this->any())->method('getDefaultSessionName')->will($this->returnValue(null));
 
         $this->filesystemMock->expects($this->once())->method('mkdir')->with('.');
-        $this->filesystemMock->expects($this->once())->method('dumpFile')->with('./default.json','{"suites":[{"name":"default","features":{"feature.file":{"title":"feature title","filename":"feature.file","description":null,"language":"en","scenarios":{"scenario title":{"title":"scenario title","tags":["tag1","tag2"],"steps":{"1":{"line":1,"text":"the user \'test\' exists","keyword":"Given","arguments":[]}},"results":{"unknown":{"environment":"unknown","stepResults":[],"duration":"0.00"}}}}}}}]}');
+        $this->filesystemMock->expects($this->once())->method('dumpFile')->with('./default.json','{"suites":[{"name":"default","features":{"feature.file":{"title":"feature title","filename":"feature.file","description":null,"language":"en","scenarios":{"scenario title":{"title":"scenario title","tags":["tag1","tag2"],"steps":{"1":{"line":1,"text":"the user \'test\' exists","keyword":"Given","arguments":[]}},"results":{"unknown":{"environment":"unknown","stepResults":[],"duration":"0.00","message":""}}}}}}}]}');
 
         $this->formatter->onBeforeSuiteTested($suiteEventMock);
         $this->formatter->onBeforeFeatureTested($featureEventMock);

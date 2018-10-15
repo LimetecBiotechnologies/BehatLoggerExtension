@@ -67,6 +67,9 @@ class BehatLoggerExtension implements ExtensionInterface
         $builder->children()
             ->scalarNode('log_format')
             ->defaultValue('json');
+        $builder->children()
+            ->scalarNode('message')
+            ->defaultValue('');
     }
 
     /**
@@ -94,6 +97,7 @@ class BehatLoggerExtension implements ExtensionInterface
         $definition->addArgument(new Reference('json.printer'));
         $definition->addArgument(new Reference('behat.logger.screenshot'));
         $definition->addArgument($config['output_path']);
+        $definition->addArgument($config['message']);
         $definition->addArgument('%mink.parameters%');
         $container->setDefinition("log.formatter", $definition)
             ->addTag("output.formatter");

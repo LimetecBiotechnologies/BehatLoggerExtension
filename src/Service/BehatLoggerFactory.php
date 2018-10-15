@@ -52,20 +52,22 @@ class BehatLoggerFactory
 
     /**
      * @param string $environment
+     * @param null|string $message
      * @return BehatResult
      */
-    public function createResult(string $environment){
-        return new BehatResult($environment);
+    public function createResult(string $environment, string $message = null){
+        return new BehatResult($environment, $message);
     }
 
     /**
      * @param int $line
      * @param bool $passed
      * @param string|null $screenshot
+     * @param string|null $message
      * @return BehatStepResult
      */
-    public function createStepResult(int $line, bool $passed, string $screenshot = null){
-        return new BehatStepResult($line, $passed, $screenshot);
+    public function createStepResult(int $line, bool $passed, string $screenshot = null, string $message = null){
+        return new BehatStepResult($line, $passed, $screenshot,$message);
     }
 
     /**

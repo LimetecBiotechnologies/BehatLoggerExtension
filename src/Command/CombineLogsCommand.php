@@ -96,7 +96,7 @@ class CombineLogsCommand extends ContainerAwareCommand
                         if($behatScenario->hasResult($currentResult->getEnvironment())){
                             throw new BehatLoggerException('the scenario "'.$currentScenario->getTitle().'" in feature "'.$behatFeature->getFilename().'" was executed more then once in environment "'.$currentResult->getEnvironment().'"'.PHP_EOL.'Error found in file "'.$file.'"');
                         }else{
-                            $behatResult = new BehatResult($currentResult->getEnvironment());
+                            $behatResult = new BehatResult($currentResult->getEnvironment(),$currentResult->getMessage());
                             $behatResult->setDuration($currentResult->getDuration());
                             $behatScenario->addResult($behatResult);
                         }
@@ -110,7 +110,7 @@ class CombineLogsCommand extends ContainerAwareCommand
     public function importBehatStepResult(BehatResult $source, BehatResult $target){
         foreach($source->getStepResults() as $sourceStepResult){
             if(!$target->hasStepResult($sourceStepResult->getLine())){
-                $targetStepResult = new BehatStepResult($sourceStepResult->getLine(),$sourceStepResult->isPassed(),$sourceStepResult->getScreenshot());
+                $targetStepResult = new BehatStepResult($sourceStepResult->getLine(),$sourceStepResult->isPassed(),$sourceStepResult->getScreenshot(),$sourceStepResult->getMessage());
                 $target->addStepResult($targetStepResult);
             }
         }

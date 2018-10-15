@@ -16,16 +16,25 @@ class BehatStepResult implements JsonSerializable
     private $line;
     private $passed;
     private $screenshot;
+    private $message;
 
-    public function __construct(int $line, bool $passed, string $screenshot = null)
+    public function __construct(int $line, bool $passed, string $screenshot = null, string $message = null)
     {
         $this->line = $line;
         $this->passed = $passed;
         $this->screenshot = $screenshot;
+        $this->message = $message;
     }
 
     public static function import(array $values){
-        $stepResult = new BehatStepResult($values['line'],$values['passed'],$values['screenshot']);
+        $line  =$values['line'];
+        $passed = $values['passed'];
+        $screenshot = $values['screenshot'];
+        $message = null;
+        if(isset($values['message'])){
+            $message = $values['message'];
+        }
+        $stepResult = new BehatStepResult($line,$passed,$screenshot,$message);
         return $stepResult;
     }
 
@@ -41,6 +50,10 @@ class BehatStepResult implements JsonSerializable
         return $this->screenshot;
     }
 
+    public function getMessage(){
+        return $this->message;
+    }
+
     /**
      * Specify data which should be serialized to JSON
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
@@ -50,6 +63,6 @@ class BehatStepResult implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return ['line' => $this->line, 'passed' => $this->passed, 'screenshot' => $this->screenshot];
+        return ['line' => $this->line, 'passed' => $this->passed, 'screenshot' => $this->screenshot,'message' => $this->message];
     }
 }

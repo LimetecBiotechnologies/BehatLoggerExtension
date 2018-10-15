@@ -77,7 +77,18 @@ class TestRailSuiteImporter extends AbstractTestRail
             $this->caseApi->create($section,$caseTitle,$this->templateId,$this->typeId,$customFields);
         }else{
             $customFields['title'] = $caseTitle;
-            $this->caseApi->update($case['id'],$customFields);
+            if(!$this->compareWithOrigin($customFields,$case)) {
+                $this->caseApi->update($case['id'], $customFields);
+            }
         }
+    }
+
+    private function compareWithOrigin(array $currentFields, array $originFields){
+        foreach ($currentFields as $key => $value) {
+            if($value !== $originFields[$key]){
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -155,7 +155,7 @@ class TestRailResultImporter extends AbstractTestRail
         $jsonResults = [];
         foreach($result->getStepResults() as $stepResult){
             $step = $scenario->getStep($stepResult->getLine());
-            $currentResult = ["content" => $this->getStepText($step), "expected" => ""];
+            $currentResult = ["content" => $this->getStepText($step), "expected" => "", "actual" => $stepResult->getMessage()];
             $currentResult['status_id'] = $this->failedStateId;
             if($stepResult->isPassed()){
                 $currentResult['status_id'] = $this->passedStateId;

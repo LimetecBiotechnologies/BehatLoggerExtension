@@ -45,22 +45,26 @@
                     "5": {
                       "line": 5,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     },
                     "6": {
                       "line": 6,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     },
                     "7": {
                       "line": 7,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     },
                     "8": {
                       "line": 8,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     }
                   },
                   "duration": "9.06"
@@ -103,22 +107,26 @@
                     "11": {
                       "line": 11,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     },
                     "12": {
                       "line": 12,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     },
                     "13": {
                       "line": 13,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     },
                     "14": {
                       "line": 14,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     }
                   },
                   "duration": "9.06"
@@ -169,22 +177,26 @@
                     "5": {
                       "line": 5,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     },
                     "6": {
                       "line": 6,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     },
                     "7": {
                       "line": 7,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     },
                     "8": {
                       "line": 8,
                       "passed": true,
-                      "screenshot": null
+                      "screenshot": null,
+                      "message": null
                     }
                   },
                   "duration": "9.06"
