@@ -18,6 +18,7 @@ use seretos\testrail\api\Milestones;
 use seretos\testrail\api\Plans;
 use seretos\testrail\api\Results;
 use seretos\testrail\api\Statuses;
+use seretos\testrail\api\Users;
 use seretos\testrail\Client;
 
 class TestRailResultImporter extends AbstractTestRail
@@ -43,12 +44,20 @@ class TestRailResultImporter extends AbstractTestRail
      */
     private $resultApi;
     /**
+     * @var Users
+     */
+    private $userApi;
+    /**
      * @var string
      */
     private $groupField;
 
     private $failedStateId;
     private $passedStateId;
+    /**
+     * @var string
+     */
+    private $userName;
 
     public function __construct(Client $client, string $projectName, string $suiteName, array $customFieldConfig, array $priorityConfig, string $identifierField, string $groupField)
     {
@@ -58,12 +67,21 @@ class TestRailResultImporter extends AbstractTestRail
         $this->configApi = $client->configurations();
         $this->stateApi = $client->statuses();
         $this->resultApi = $client->results();
+        $this->userApi = $client->users();
         $this->groupField = $groupField;
 
         $this->failedStateId = $this->stateApi->findByName('failed')['id'];
         $this->passedStateId = $this->stateApi->findByName('passed')['id'];
+        $this->userName = $client->getUser();
     }
 
+    /**
+     * @param string $planName
+     * @param string|null $description
+     * @param string|null $milestoneName
+     * @return mixed
+     * @throws TestRailException
+     */
     public function createPlan(string $planName, string $description = null, string $milestoneName = null){
         $milestoneId = null;
         if($milestoneName !== null){
@@ -97,8 +115,12 @@ class TestRailResultImporter extends AbstractTestRail
         }
 
         $plan = $this->planApi->create($this->projectId,$planName,$description,$milestoneId);
+        $user = $this->userApi->find($this->userName);
+        if(!isset($user['id'])){
+            throw new TestRailException('the user '.$this->userName.' not found!');
+        }
         foreach($runGroup as $group => $runs){
-            $this->planApi->createEntry($plan['id'],$this->suiteId,$group,$configGroups[$group],$runs,null,false,$caseIds);
+            $this->planApi->createEntry($plan['id'],$this->suiteId,$group,$configGroups[$group],$runs,null,false,$caseIds,$user['id']);
         }
 
         return $this->planApi->get($plan['id']);
