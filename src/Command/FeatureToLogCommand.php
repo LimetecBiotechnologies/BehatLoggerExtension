@@ -102,6 +102,7 @@ class FeatureToLogCommand extends ContainerAwareCommand
             preg_match_all('/('.$factory->getKeywords()[$language]['scenario_outline'].'):/', $fileContent, $matches, PREG_SET_ORDER, 0);
             if(count($matches)>0){
                 $output->writeln('<error>the keyword '.$factory->getKeywords()[$language]['scenario_outline'].' is not allowed!</error>');
+                return -1;
             }
         }
 
