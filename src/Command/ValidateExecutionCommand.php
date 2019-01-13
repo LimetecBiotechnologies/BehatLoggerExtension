@@ -24,7 +24,8 @@ class ValidateExecutionCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      * @return int|null
      */
-    public function execute (InputInterface $input, OutputInterface $output) {
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $printer = $this->getContainer()->get('json.printer');
         /**
          * @var $actualSuites BehatSuite[]
@@ -34,19 +35,18 @@ class ValidateExecutionCommand extends ContainerAwareCommand
         $expectedSuites = $printer->toObjects($input->getArgument('expected-file'));
 
         $err = 0;
-        foreach($expectedSuites as $expectedSuite){
-            foreach($expectedSuite->getFeatures() as $feature){
-                foreach($feature->getScenarios() as $scenario){
-                    if($this->checkScenarioTags($scenario,$input->getOption('tags'))) {
-                        $actualScenario = $this->findScenario($actualSuites, $scenario->getTitle());
-                        if($actualScenario === null){
-                            $output->writeln('the scenario "'.$scenario->getTitle().'" was not executed!');
+        foreach ($expectedSuites as $expectedSuite) {
+            foreach ($expectedSuite->getFeatures() as $feature) {
+                foreach ($feature->getScenarios() as $scenario) {
+                    if ($this->checkScenarioTags($scenario, $input->getOption('tags'))) {
+                        $actualScenario = $this->findScenario($actualSuites, $scenario->getTitle(), $feature->getFilename());
+                        if ($actualScenario === null) {
+                            $output->writeln('the scenario "' . $scenario->getTitle() . '" was not executed!');
                             $err = -1;
-                        }
-                        else if(count($actualScenario->getResults()) === 0){
-                            $output->writeln('the scenario "'.$scenario->getTitle().'" has no environments!');
+                        } else if (count($actualScenario->getResults()) === 0) {
+                            $output->writeln('the scenario "' . $scenario->getTitle() . '" has no environments!');
                             $err = -1;
-                        }else {
+                        } else {
                             $accepted = true;
                             foreach ($input->getOption('environments') as $environment) {
                                 if (!$actualScenario->hasResult($environment)) {
@@ -59,8 +59,8 @@ class ValidateExecutionCommand extends ContainerAwareCommand
                                 $output->writeln('<info>the scenario "' . $scenario->getTitle() . '" was executed on all required environments (' . implode(",", $input->getOption('environments')) . ')</info>', OutputInterface::VERBOSITY_VERBOSE);
                             }
                         }
-                    }else{
-                        $output->writeln('<info>the scenario "'.$scenario->getTitle().'" are skipped</info>',OutputInterface::VERBOSITY_VERBOSE);
+                    } else {
+                        $output->writeln('<info>the scenario "' . $scenario->getTitle() . '" are skipped</info>', OutputInterface::VERBOSITY_VERBOSE);
                     }
                 }
             }
@@ -71,17 +71,18 @@ class ValidateExecutionCommand extends ContainerAwareCommand
         return $err;
     }
 
-    private function checkScenarioTags(BehatScenario $scenario, array $tags){
+    private function checkScenarioTags(BehatScenario $scenario, array $tags)
+    {
         $accept = true;
-        foreach($tags as $tag){
+        foreach ($tags as $tag) {
             $currentTag = $tag;
-            if(substr($tag,0,1) === '~'){
-                $currentTag = substr($tag,1,strlen($tag));
-                if($scenario->hasTag($currentTag)){
+            if (substr($tag, 0, 1) === '~') {
+                $currentTag = substr($tag, 1, strlen($tag));
+                if ($scenario->hasTag($currentTag)) {
                     $accept = false;
                 }
-            }else{
-                if(!$scenario->hasTag($currentTag)){
+            } else {
+                if (!$scenario->hasTag($currentTag)) {
                     $accept = false;
                 }
             }
@@ -90,12 +91,15 @@ class ValidateExecutionCommand extends ContainerAwareCommand
         return $accept;
     }
 
-    private function findScenario(array $suites, string $title){
-        foreach($suites as $suite){
-            /* @var $suite BehatSuite*/
-            foreach($suite->getFeatures() as $feature){
-                if($feature->hasScenario($title)){
-                    return $feature->getScenario($title);
+    private function findScenario(array $suites, string $title, string $featureFile)
+    {
+        foreach ($suites as $suite) {
+            /* @var $suite BehatSuite */
+            foreach ($suite->getFeatures() as $feature) {
+                if ($feature->getFilename() === $featureFile) {
+                    if ($feature->hasScenario($title)) {
+                        return $feature->getScenario($title);
+                    }
                 }
             }
         }
@@ -106,7 +110,8 @@ class ValidateExecutionCommand extends ContainerAwareCommand
      * Configure this Command.
      * @return void
      */
-    protected function configure () {
+    protected function configure()
+    {
         $this->setName('validate:execution')
             ->setDescription('compare two log files and check that all tests are executed')
             ->addArgument('actual-file',
@@ -115,10 +120,10 @@ class ValidateExecutionCommand extends ContainerAwareCommand
             ->addArgument('expected-file',
                 InputArgument::REQUIRED,
                 'the expected log file')
-            ->addOption('tags','t',
+            ->addOption('tags', 't',
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'the behat tags to filter')
-            ->addOption('environments','e',
+            ->addOption('environments', 'e',
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'the execution environments')
             ->setHelp(<<<EOT

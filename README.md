@@ -70,8 +70,14 @@ behat-logger-cli feature:to:log [suite-name] --output=/output/path/ --regex=feat
 ```
 
 check that all scenarios in the log file has an unique title:
+> This command is deprecated please use validate:scenario:id in future!
 ```bash
 behat-logger-cli validate:scenario:title [log-file.json]
+```
+
+check that all schenarios in the log file has an unique id tag:
+```bash
+behat-logger-cli validate:scenario:id [log-file.json] --identifier_tag_regex="/^testrail-case-([0-9]*)$/"
 ```
 
 check that all tests are executed in the given environments:

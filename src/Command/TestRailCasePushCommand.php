@@ -63,12 +63,19 @@ EOT
 
         $client = Client::create($config['api']['server'],$config['api']['user'],$config['api']['password']);
 
+        $tagIdRegex = null;
+        $tagIdField = null;
+        if(isset($config['api']['identifier_tag_regex']) && isset($config['api']['identifier_tag_field'])){
+            $tagIdRegex = $config['api']['identifier_tag_regex'];
+            $tagIdField = $config['api']['identifier_tag_field'];
+        }
+
         $importer = new TestRailSuiteImporter($client,
             $config['api']['project'],
             $input->getArgument('suite'),
             $config['fields'],
             $config['priorities'],
-            $config['api']['identifier']);
+            $config['api']['identifier'],$tagIdRegex,$tagIdField);
         $importer->setTemplate($config['api']['template']);
         $importer->setType($config['api']['type']);
 

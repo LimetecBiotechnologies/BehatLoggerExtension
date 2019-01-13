@@ -11,7 +11,7 @@
           "scenarios": {
             "first scenario in first feature": {
               "title": "first scenario in first feature",
-              "tags": [],
+              "tags": ["testrail-1"],
               "steps": {
                 "5": {
                   "line": 5,
@@ -42,7 +42,7 @@
             },
             "second scenario in first feature": {
               "title": "second scenario in first feature",
-              "tags": [],
+              "tags": ["testrail-2"],
               "steps": {
                 "11": {
                   "line": 11,
@@ -81,7 +81,7 @@
           "scenarios": {
             "first scenario in second feature": {
               "title": "first scenario in second feature",
-              "tags": [],
+              "tags": ["testrail-3"],
               "steps": {
                 "5": {
                   "line": 5,
@@ -112,7 +112,7 @@
             },
             "second scenario in second feature": {
               "title": "second scenario in second feature",
-              "tags": [],
+              "tags": ["testrail-4"],
               "steps": {
                 "11": {
                   "line": 11,
