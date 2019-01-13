@@ -47,7 +47,6 @@ FROM stage AS container
 USER root
 
 COPY behat-logger-cli /usr/share/behat-logger-cli/
-COPY .testrail.yml /home/behat/
 RUN chmod +x /usr/share/behat-logger-cli/behat-logger-cli && \
     rm -rf /usr/bin/behat-logger-cli && \
     ln -s /usr/share/behat-logger-cli/behat-logger-cli /usr/bin/behat-logger-cli
