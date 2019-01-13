@@ -8,8 +8,8 @@ matrix:
   - php: 7.1
   - php: 7.2
 script:
-- bin/build.sh dev=false
-- phpunit
+- bin/build.sh
+- vendor/bin/phpunit
 
 jobs:
   include:
@@ -22,6 +22,7 @@ jobs:
     - yaml set Resources/config/services.yml parameters.behat_logger_version $TRAVIS_BRANCH > Resources/config/services2.yml
     - rm Resources/config/services.yml
     - mv Resources/config/services2.yml Resources/config/services.yml
+    - bin/build.sh dev=false
     - bin/docker/build-container.sh
     - docker images
 #    after_deploy:
