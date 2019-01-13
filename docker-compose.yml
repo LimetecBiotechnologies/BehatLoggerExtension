@@ -1,0 +1,49 @@
+version: '3.7'
+
+services:
+  stage:
+    build:
+      context: ./bin/docker/app
+      target: stage
+    user: "${USRID}:${GRPID}"
+    volumes:
+      - ./:/behat
+
+  dev:
+    build:
+      context: ./bin/docker/app
+      target: dev
+    user: "${USRID}:${GRPID}"
+    volumes:
+      - ./:/behat
+    environment:
+      HOSTIP: ${HOSTIP}
+
+#  container:
+#    build:
+#      context: ./bin/docker/app
+#      target: container
+#    volumes:
+#      - ./:/behat/
+#
+#  testrail:
+#    build:
+#      context: ./bin/docker/testrail
+#    ports:
+#      - 8080:80
+#    volumes:
+#      - db_data:/var/lib/mysql
+#
+#  portainer:
+#    image: portainer/portainer
+#    command: -H unix:///var/run/docker.sock
+#    restart: always
+#    ports:
+#      - 9010:9000
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - portainer_data:/data
+#
+#volumes:
+#  portainer_data:
+#  db_data:

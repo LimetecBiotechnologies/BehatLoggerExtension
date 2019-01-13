@@ -59,9 +59,9 @@ class TestRailResultImporter extends AbstractTestRail
      */
     private $userName;
 
-    public function __construct(Client $client, string $projectName, string $suiteName, array $customFieldConfig, array $priorityConfig, string $identifierField, string $groupField)
+    public function __construct(Client $client, string $projectName, string $suiteName, array $customFieldConfig, array $priorityConfig, string $identifierRegex, string $identifierField, string $groupField)
     {
-        parent::__construct($client, $projectName, $suiteName, $customFieldConfig, $priorityConfig, $identifierField);
+        parent::__construct($client, $projectName, $suiteName, $customFieldConfig, $priorityConfig, null,$identifierRegex,$identifierField);
         $this->milestoneApi = $client->milestones();
         $this->planApi = $client->plans();
         $this->configApi = $client->configurations();
@@ -136,9 +136,8 @@ class TestRailResultImporter extends AbstractTestRail
      * @param array $plan
      * @throws \seretos\BehatLoggerExtension\Exception\TestRailException
      */
-    public function createResult(BehatScenario $scenario, BehatFeature $feature, array $plan){
-        $section = $this->getCaseSection($feature->getTitle());
-        $case = $this->caseApi->findByField($this->projectId,$this->suiteId,$section,$this->identifierField,$scenario->getTitle());
+    public function createResult(BehatScenario $scenario, array $plan){
+        $case = $this->caseApi->findByField($this->projectId,$this->suiteId,$this->identifierField,$scenario->getTestRailId($this->identifierRegex),null);
         $fields = $this->getCustomFieldValues($scenario->getTags());
         $group = $this->fieldApi->findElementNameById($this->groupField,$fields[$this->groupField]);
         $currentRun = null;

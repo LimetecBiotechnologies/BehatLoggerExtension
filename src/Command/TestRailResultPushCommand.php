@@ -12,21 +12,23 @@ namespace seretos\BehatLoggerExtension\Command;
 use seretos\BehatLoggerExtension\Entity\BehatSuite;
 use seretos\BehatLoggerExtension\Service\TestRailResultImporter;
 use seretos\testrail\Client;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Yaml\Yaml;
 
-class TestRailResultPushCommand extends ContainerAwareCommand
+class TestRailResultPushCommand extends AbstractTestRailCommand
 {
     /**
      * Configure this Command.
      * @return void
      */
     protected function configure () {
+        $this->setTestRailServerOptions();
+        $this->setGroupFieldOption();
+        $this->setIdentifierOptions();
+        $this->setSynchronizationOptions();
         $this->setName('testrail:push:results')
             ->addArgument('suite',
                 InputArgument::REQUIRED,
@@ -35,8 +37,8 @@ class TestRailResultPushCommand extends ContainerAwareCommand
                 InputArgument::REQUIRED,
                 'the behat json log file')
             ->addArgument('name',InputArgument::REQUIRED,'the plan name')
-            ->addOption('milestone','m',InputOption::VALUE_REQUIRED,'the refered milestone',null)
-            ->addOption('description','d',InputOption::VALUE_REQUIRED,'the plan description',null)
+            ->addOption('milestone',null,InputOption::VALUE_REQUIRED,'the refered milestone',null)
+            ->addOption('description',null,InputOption::VALUE_REQUIRED,'the plan description',null)
             ->setDescription('send a result feature to an testrail instance')
             ->setHelp(<<<EOT
 The <info>%command.name%</info> sends the results to an testrail instance
@@ -51,41 +53,73 @@ EOT
      * @throws \seretos\BehatLoggerExtension\Exception\TestRailException
      */
     public function execute (InputInterface $input, OutputInterface $output) {
-        /* @var $fs Filesystem*/
-        $fs = $this->getContainer()->get('filesystem');
-        if(!$fs->exists('.testrail.yml')){
-            $output->writeln('<error>config file .testrail.yml does not exist!</error>');
+        $server = $this->getTestRailServerOptions($input);
+        $groupField = $this->getGroupFieldOption($input);
+        $identifier = $this->getTestRailIdentifierOptions($input);
+        $synchronization = $this->getTestRailSynchronizationOptions($input);
+
+        $client = null;
+        try{
+            $client = Client::create($server['server'],$server['user'],$server['password']);
+        }catch (\Throwable $e){
+            $output->writeln('<error>cant connect to server '.$server['server'].'</error>');
             return -1;
         }
-        $config = Yaml::parseFile('.testrail.yml');
 
-        $client = Client::create($config['api']['server'],$config['api']['user'],$config['api']['password']);
+        if($server['project'] === null){
+            $output->writeln('<error>the project is required!</error>');
+            return -1;
+        }
+
+        if($identifier['identifier-field'] === null){
+            $output->writeln('<error>the identifier field is required!</error>');
+            return -1;
+        }
+
+        if($groupField === null){
+            $output->writeln('<error>the group-field is required!</error>');
+            return -1;
+        }
 
         $importer = new TestRailResultImporter($client,
-            $config['api']['project'],
+            $server['project'],
             $input->getArgument('suite'),
-            $config['fields'],
-            $config['priorities'],
-            $config['api']['identifier'],
-            $config['api']['run_group_field']);
-        $importer->setType($config['api']['type']);
+            $this->getFieldOptions(),
+            $this->getPriorityOptions(),
+            $identifier['identifier-regex'],
+            $identifier['identifier-field'],
+            $groupField);
+        $importer->setType($synchronization['type']);
 
         $plan = $importer->createPlan($input->getArgument('name'),$input->getOption('description'),$input->getOption('milestone'));
 
         $printer = $this->getContainer()->get('json.printer');
         $jsonSuites = $printer->toObjects($input->getArgument('json-file'));
 
+        $cnt = 0;
+        foreach ($jsonSuites as $currentSuite) {
+            /* @var $currentSuite BehatSuite */
+            $cnt += $currentSuite->getScenarioCount();
+        }
+
+        $progressBar = new ProgressBar($output, $cnt);
+        $progressBar->setFormat(' %current%/%max% [%bar%] %message%');
+        $progressBar->setMessage('start');
+
         foreach($jsonSuites as $suite){
             /* @var BehatSuite $suite*/
             foreach($suite->getFeatures() as $feature){
-                $output->writeln('import feature results for '.$feature->getFilename());
                 foreach($feature->getScenarios() as $scenario){
-                    $importer->createResult($scenario,$feature,$plan);
+                    $progressBar->advance();
+                    $progressBar->setMessage($feature->getFilename());
+                    $importer->createResult($scenario,$plan);
                 }
             }
         }
 
         $importer->closePlan($plan['id']);
+        $progressBar->finish();
+        $output->writeln('');
 
         return 0;
     }

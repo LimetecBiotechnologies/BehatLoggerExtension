@@ -12,23 +12,20 @@ namespace seretos\BehatLoggerExtension\Command;
 use seretos\BehatLoggerExtension\Entity\BehatSuite;
 use seretos\BehatLoggerExtension\Service\TestRailConfigImporter;
 use seretos\testrail\Client;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
 
-class TestRailConfigPushCommand extends ContainerAwareCommand
+class TestRailConfigPushCommand extends AbstractTestRailCommand
 {
     /**
      * Configure this Command.
      * @return void
      */
     protected function configure () {
+        $this->setTestRailServerOptions();
+        $this->setGroupFieldOption();
         $this->setName('testrail:push:configs')
-            ->addArgument('suite',
-                InputArgument::REQUIRED,
-                'the suite name')
             ->addArgument('json-file',
                 InputArgument::REQUIRED,
                 'the behat json log file')
@@ -49,17 +46,31 @@ EOT
         $printer = $this->getContainer()->get('json.printer');
         $jsonSuites = $printer->toObjects($input->getArgument('json-file'));
 
-        $config = Yaml::parseFile('.testrail.yml');
+        $server = $this->getTestRailServerOptions($input);
+        $groupField = $this->getGroupFieldOption($input);
 
-        $client = Client::create($config['api']['server'],$config['api']['user'],$config['api']['password']);
+        $client = null;
+        try{
+            $client = Client::create($server['server'],$server['user'],$server['password']);
+        }catch (\Throwable $e){
+            $output->writeln('<error>cant connect to server '.$server['server'].'</error>');
+            return -1;
+        }
+
+        if($server['project'] === null){
+            $output->writeln('<error>the project is required!</error>');
+            return -1;
+        }
+        if($groupField === null){
+            $output->writeln('<error>the group-field is required!</error>');
+            return -1;
+        }
 
         $importer = new TestRailConfigImporter($client,
-            $config['api']['project'],
-            $input->getArgument('suite'),
-            $config['fields'],
-            $config['priorities'],
-            $config['api']['identifier'],
-            $config['api']['run_group_field']);
+            $server['project'],
+            $this->getFieldOptions(),
+            $this->getPriorityOptions(),
+            $groupField);
 
         foreach($jsonSuites as $suite) {
             /* @var BehatSuite $suite */
@@ -69,6 +80,7 @@ EOT
                 }
             }
         }
+        $output->writeln('done');
 
         return 0;
     }
