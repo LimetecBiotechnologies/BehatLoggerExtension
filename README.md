@@ -35,7 +35,9 @@ docker run -v /path/to/project/:/behat/ seretos/behat-logger-cli behat-logger-cl
 
 add the docker-container to your docker-compose.yml
 ```yml
-...
+version: '3.7'
+
+services:
   features-push:
     image: seretos/behat-logger-cli
     command: push
