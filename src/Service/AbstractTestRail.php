@@ -74,8 +74,16 @@ abstract class AbstractTestRail
      * @var string
      */
     protected $identifierField;
+    /**
+     * @var string
+     */
+    protected $identifierTagField;
+    /**
+     * @var string
+     */
+    protected $identifierTagRegex;
 
-    public function __construct(Client $client, string $projectName, string $suiteName, array $customFieldConfig, array $priorityConfig, string $identifierField)
+    public function __construct(Client $client, string $projectName, string $suiteName, array $customFieldConfig, array $priorityConfig, string $identifierField, string $identifierTagRegex = null, string $identifierTagField = null)
     {
         $this->projectApi = $client->projects();
         $this->suiteApi = $client->suites();
@@ -90,6 +98,9 @@ abstract class AbstractTestRail
         $this->customFieldConfig = $customFieldConfig;
         $this->priorityConfig = $priorityConfig;
         $this->identifierField = $identifierField;
+
+        $this->identifierTagField = $identifierTagField;
+        $this->identifierTagRegex = $identifierTagRegex;
 
         $this->typeId = null;
     }

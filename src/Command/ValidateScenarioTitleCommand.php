@@ -23,6 +23,9 @@ class ValidateScenarioTitleCommand extends ContainerAwareCommand
      * @return int|null
      */
     public function execute (InputInterface $input, OutputInterface $output) {
+        @trigger_error("this command is deprecated. please use validate:scenario:id in future!", E_USER_DEPRECATED);
+        $output->writeln("this command is deprecated. please use validate:scenario:id in future!");
+
         $printer = $this->getContainer()->get('json.printer');
         /* @var $suites BehatSuite[]*/
         $suites = $printer->toObjects($input->getArgument('file'));

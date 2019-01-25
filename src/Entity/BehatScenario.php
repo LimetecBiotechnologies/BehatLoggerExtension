@@ -10,6 +10,7 @@ namespace seretos\BehatLoggerExtension\Entity;
 
 
 use JsonSerializable;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class BehatScenario implements JsonSerializable
 {
@@ -98,6 +99,33 @@ class BehatScenario implements JsonSerializable
 
     public function getTitle(){
         return $this->title;
+    }
+
+    public function getTestRailId($regex, OutputInterface $output = null){
+        $ids = [];
+        foreach ($this->getTags() as $tag) {
+            preg_match($regex, $tag, $outputVal);
+            if (count($outputVal) > 1) {
+                $ids[] = $outputVal[1];
+            }
+        }
+
+        if(count($ids) < 1){
+            if($output !== null) {
+                $output->writeln('<error>the following scenario has no testrail id!</error>');
+                $output->writeln('<error>' . $this->getTitle() . '</error>');
+                $output->writeln('');
+            }
+            return null;
+        }else if(count($ids) > 1){
+            if($output !== null) {
+                $output->writeln('<error>the following scenario has more than one testrail id!</error>');
+                $output->writeln('<error>' . $this->getTitle() . '</error>');
+                $output->writeln('');
+            }
+            return null;
+        }
+        return $ids[0];
     }
 
     /**
