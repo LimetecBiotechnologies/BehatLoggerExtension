@@ -23,26 +23,26 @@ jobs:
     - rm Resources/config/services.yml
     - mv Resources/config/services2.yml Resources/config/services.yml
     - bin/build.sh dev=false
-    - bin/docker/build-container.sh
-    - docker images
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - docker tag seretos/behat-logger-cli seretos/behat-logger-cli:$TRAVIS_BRANCH
-    - docker push seretos/behat-logger-cli:$TRAVIS_BRANCH
-#    after_deploy:
 #    - bin/docker/build-container.sh
 #    - docker images
 #    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 #    - docker tag seretos/behat-logger-cli seretos/behat-logger-cli:$TRAVIS_BRANCH
 #    - docker push seretos/behat-logger-cli:$TRAVIS_BRANCH
-#    - docker push seretos/behat-logger-cli:latest
-#    deploy:
-#    - provider: releases
-#      api_key:
-#        secure: Eg0gSHDw9aEFd0SBjtEdGolqIdSg62aQTts6Ss8DNTLrzi3uRAK57ktEYL/cxHqOHFzmWsnj2bn0lIpqWb8dZlPKaJmRiKVlJQQXTHbi0muKlJ0tfm5hEzjxN04toym9gp2qzJI+Nyj0H49ikulLfQIOsWapw0NbpeyFyMEnAUDjUMiYmatVrkfUXM/GDFij6kDbCCNxLfasGTNnPiCAHlu+Y/osx2DyxY05gYBigOE3V0kTPEsgeG9hKcZkuuWNp02kWbJGmW8aidSC0DF1giKSd5hBUPvEWfnJmEBy41PwQaXp+bs8DI4Dx2wrDrBIN+VfUIdfqadNWhpLt+C815IADwiasUk9m/kCSDVBAOtLRGzj1fuOsRKECOBbq3Tq9rfQsZhl10yPh43Mg990nVvK1LY8j0YCGm1hcxxeLf718NRv83BYC6Pg/hvcOXGg4H1xiWNyeYysZmW1ZBRR2iUHDW/h7lgj/v/671XXWqiARMn0v0xflUcsCy18p44gUZumZU/A3tqN8MMLBzF6Bw8osD+AfnRCDJaAT6/naY+oKTXmIAJVrDVicTc5+eNmoa2+7tjBqBi28fR82ULi3t3SjkJw3DQGvSLdzrncCPwlt9zwsPST38gCrQsI252fTBVNuuVO0gjLWN8ZHvS5ZwlAQ6lnDnZv9nkIOEFYSj8=
-#      skip_cleanup: true
-#      file:
-#      - behat-logger-cli.phar
-#      - behat-logger-cli.tar.gz
-#      on:
-#        tags: true
-#        repo: Seretos/BehatLoggerExtension
+    after_deploy:
+    - bin/docker/build-container.sh
+    - docker images
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker tag seretos/behat-logger-cli seretos/behat-logger-cli:$TRAVIS_BRANCH
+    - docker push seretos/behat-logger-cli:$TRAVIS_BRANCH
+    - docker push seretos/behat-logger-cli:latest
+    deploy:
+    - provider: releases
+      api_key:
+        secure: Eg0gSHDw9aEFd0SBjtEdGolqIdSg62aQTts6Ss8DNTLrzi3uRAK57ktEYL/cxHqOHFzmWsnj2bn0lIpqWb8dZlPKaJmRiKVlJQQXTHbi0muKlJ0tfm5hEzjxN04toym9gp2qzJI+Nyj0H49ikulLfQIOsWapw0NbpeyFyMEnAUDjUMiYmatVrkfUXM/GDFij6kDbCCNxLfasGTNnPiCAHlu+Y/osx2DyxY05gYBigOE3V0kTPEsgeG9hKcZkuuWNp02kWbJGmW8aidSC0DF1giKSd5hBUPvEWfnJmEBy41PwQaXp+bs8DI4Dx2wrDrBIN+VfUIdfqadNWhpLt+C815IADwiasUk9m/kCSDVBAOtLRGzj1fuOsRKECOBbq3Tq9rfQsZhl10yPh43Mg990nVvK1LY8j0YCGm1hcxxeLf718NRv83BYC6Pg/hvcOXGg4H1xiWNyeYysZmW1ZBRR2iUHDW/h7lgj/v/671XXWqiARMn0v0xflUcsCy18p44gUZumZU/A3tqN8MMLBzF6Bw8osD+AfnRCDJaAT6/naY+oKTXmIAJVrDVicTc5+eNmoa2+7tjBqBi28fR82ULi3t3SjkJw3DQGvSLdzrncCPwlt9zwsPST38gCrQsI252fTBVNuuVO0gjLWN8ZHvS5ZwlAQ6lnDnZv9nkIOEFYSj8=
+      skip_cleanup: true
+      file:
+      - behat-logger-cli.phar
+      - behat-logger-cli.tar.gz
+      on:
+        tags: true
+        repo: Seretos/BehatLoggerExtension

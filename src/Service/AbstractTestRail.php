@@ -131,28 +131,6 @@ abstract class AbstractTestRail
         $this->suiteId = $suite['id'];
     }
 
-//    /**
-//     * @param string $sectionString
-//     * @return int
-//     * @throws TestRailException
-//     */
-//    protected function getCaseSection(string $sectionString){
-//        $sections = explode('=>',$sectionString);
-//        $parentId = null;
-//        $sec = [];
-//        foreach($sections as $section){
-//            $sec = $this->sectionApi->findByNameAndParent($this->projectId, $this->suiteId,$section,$parentId);
-//            if(!isset($sec['id'])){
-//                $sec = $this->sectionApi->create($this->projectId,$this->suiteId,$section,null,$parentId);
-//            }
-//            $parentId = $sec['id'];
-//        }
-//        if(!isset($sec['id'])){
-//            throw new TestRailException('section not found!');
-//        }
-//        return $sec['id'];
-//    }
-
     /**
      * @param array $tags
      * @return array
