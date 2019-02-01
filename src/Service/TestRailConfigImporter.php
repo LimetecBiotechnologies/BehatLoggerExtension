@@ -10,6 +10,7 @@ namespace seretos\BehatLoggerExtension\Service;
 
 
 use seretos\BehatLoggerExtension\Entity\BehatScenario;
+use seretos\BehatLoggerExtension\Exception\TestRailException;
 use seretos\testrail\api\Configurations;
 use seretos\testrail\Client;
 
@@ -24,9 +25,9 @@ class TestRailConfigImporter extends AbstractTestRail
      */
     private $configurationApi;
 
-    public function __construct(Client $client, string $projectName, string $suiteName, array $customFieldConfig, array $priorityConfig, string $identifierField, string $groupField)
+    public function __construct(Client $client, string $projectName, array $customFieldConfig, array $priorityConfig, string $groupField)
     {
-        parent::__construct($client, $projectName, $suiteName, $customFieldConfig, $priorityConfig, $identifierField);
+        parent::__construct($client, $projectName, null, $customFieldConfig, $priorityConfig, null);
         $this->groupField = $groupField;
 
         $this->configurationApi = $client->configurations();
@@ -38,6 +39,10 @@ class TestRailConfigImporter extends AbstractTestRail
      */
     public function createConfigs(BehatScenario $scenario){
         $fields = $this->getCustomFieldValues($scenario->getTags());
+
+        if(!$fields['custom_automation_type']){
+            throw new TestRailException("no field configuration for the given group field ".$this->groupField);
+        }
 
         $group = $this->fieldApi->findElementNameById($this->groupField,$fields[$this->groupField]);
 

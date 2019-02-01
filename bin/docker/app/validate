@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+if [[ -z "$FEATURE_PATH" ]]; then
+    FEATURE_PATH="/behat/features/*"
+fi
+
+if [[ -z "$OUTPUT_PATH" ]]; then
+    OUTPUT_PATH="/home/behat/"
+fi
+
+if [[ -z "$IDENTIFIER_REGEX" ]]; then
+    IDENTIFIER_REGEX="/^testrail-case-([0-9]*)$/"
+fi
+
+behat-logger-cli feature:to:log default --regex="${FEATURE_PATH}" --output="${OUTPUT_PATH}"
+behat-logger-cli validate:scenario:id ${OUTPUT_PATH}/default.json --identifier-regex="${IDENTIFIER_REGEX}"

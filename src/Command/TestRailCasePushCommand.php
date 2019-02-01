@@ -13,20 +13,21 @@ use seretos\BehatLoggerExtension\Exception\TestRailException;
 use seretos\BehatLoggerExtension\IO\JsonIO;
 use seretos\BehatLoggerExtension\Service\TestRailSuiteImporter;
 use seretos\testrail\Client;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Yaml\Yaml;
 
-class TestRailCasePushCommand extends ContainerAwareCommand
+class TestRailCasePushCommand extends AbstractTestRailCommand
 {
     /**
      * Configure this Command.
      * @return void
      */
     protected function configure () {
+        $this->setTestRailServerOptions();
+        $this->setIdentifierOptions();
+        $this->setSynchronizationOptions();
         $this->setName('testrail:push:cases')
             ->addArgument('suite',
                 InputArgument::REQUIRED,
@@ -41,6 +42,15 @@ The <info>%command.name%</info> sends the cases to an testrail instance
 Example (<comment>1</comment>): <info>send your result to testrail. create or update the suite testsuite. requires a .testrail.yml in the current working dir</info>
 
     $ %command.full_name% testSuite result.json
+
+Example (<comment>2</comment>): <info>send your result to testrail. create or update the suite testsuite. without .testrail.yml</info>
+
+    $ %command.full_name% testSuite result.json --server=http://your.testrail.instance/testrail \
+                                                --user=yourUser \
+                                                --passwod=yourPassword \
+                                                --project=yourTestRailProject \
+                                                --default-section=yourDefaultImportSection \
+                                                --identifier-field=yourTestRailIdentifierField
 EOT
             );
     }
@@ -52,46 +62,79 @@ EOT
      * @throws TestRailException
      */
     public function execute (InputInterface $input, OutputInterface $output) {
+        $fields = $this->getFieldOptions();
+        $priorities = $this->getPriorityOptions();
 
-        /* @var $fs Filesystem*/
-        $fs = $this->getContainer()->get('filesystem');
-        if(!$fs->exists('.testrail.yml')){
-            $output->writeln('<error>config file .testrail.yml does not exist!</error>');
+        $server = $this->getTestRailServerOptions($input);
+        $identifier = $this->getTestRailIdentifierOptions($input);
+        $synchronization = $this->getTestRailSynchronizationOptions($input);
+
+        if($server['project'] === null){
+            $output->writeln('<error>the project is required!</error>');
             return -1;
         }
-        $config = Yaml::parseFile('.testrail.yml');
 
-        $client = Client::create($config['api']['server'],$config['api']['user'],$config['api']['password']);
+        if($identifier['identifier-field'] === null){
+            $output->writeln('<error>the identifier field is required!</error>');
+            return -1;
+        }
 
-        $tagIdRegex = null;
-        $tagIdField = null;
-        if(isset($config['api']['identifier_tag_regex']) && isset($config['api']['identifier_tag_field'])){
-            $tagIdRegex = $config['api']['identifier_tag_regex'];
-            $tagIdField = $config['api']['identifier_tag_field'];
+        if($synchronization['default-section'] === null){
+            $output->writeln('<error>the default section is required!</error>');
+            return -1;
+        }
+
+        $client = null;
+        try{
+            $client = Client::create($server['server'],$server['user'],$server['password']);
+        }catch (\Throwable $e){
+            $output->writeln('<error>cant connect to server '.$server['server'].'</error>');
+            return -1;
         }
 
         $importer = new TestRailSuiteImporter($client,
-            $config['api']['project'],
+            $server['project'],
             $input->getArgument('suite'),
-            $config['fields'],
-            $config['priorities'],
-            $config['api']['identifier'],$tagIdRegex,$tagIdField);
-        $importer->setTemplate($config['api']['template']);
-        $importer->setType($config['api']['type']);
+            $fields,
+            $priorities,
+            $synchronization['title-field'],
+            $identifier['identifier-regex'],
+            $identifier['identifier-field'],$synchronization['default-section']);
+        $importer->setTemplate($synchronization['template']);
+        $importer->setType($synchronization['type']);
 
         /* @var $printer JsonIO*/
         $printer = $this->getContainer()->get('json.printer');
         $jsonSuites = $printer->toObjects($input->getArgument('json-file'));
 
+        $cnt = 0;
+        foreach ($jsonSuites as $currentSuite) {
+            /* @var $currentSuite BehatSuite */
+            $cnt += $currentSuite->getScenarioCount();
+        }
+
+        $output->writeln('<comment>sending scenario data to testrail!</comment>');
+        $output->writeln('info:');
+        $output->writeln('server: '.$server['server']);
+        $output->writeln('user: '.$server['user']);
+        $output->writeln('project: '.$server['project']);
+        $output->writeln('');
+
+        $progressBar = new ProgressBar($output, $cnt);
+        $progressBar->setFormat(' %current%/%max% [%bar%] %message%');
+        $progressBar->setMessage('start');
         foreach ($jsonSuites as $currentSuite){
             /* @var $currentSuite BehatSuite*/
             foreach ($currentSuite->getFeatures() as $feature){
-                $output->writeln('import feature '.$feature->getFilename());
                 foreach ($feature->getScenarios() as $scenario) {
-                    $importer->pushTest($scenario,$feature);
+                    $importer->pushTest($scenario);
+                    $progressBar->advance();
+                    $progressBar->setMessage($feature->getFilename());
                 }
             }
         }
+        $progressBar->finish();
+        $output->writeln('');
 
         return 0;
     }

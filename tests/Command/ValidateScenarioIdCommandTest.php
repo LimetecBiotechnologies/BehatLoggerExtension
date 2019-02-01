@@ -36,7 +36,7 @@ class ValidateScenarioIdCommandTest extends KernelTestCase
         $commandTester->execute(array(
             'command'  => $command->getName(),
             'file' => 'tests/logs/validate_title/simple.json',
-            '--identifier_tag_regex' => '/^testrail-([0-9]*)$/'
+            '--identifier-regex' => '/^testrail-([0-9]*)$/'
         ),['interactive' => false]);
 
         $output = $commandTester->getDisplay();
@@ -68,7 +68,7 @@ class ValidateScenarioIdCommandTest extends KernelTestCase
 
         $output = $commandTester->getDisplay();
 
-        $this->assertContains("the following scenario has no testrail id",$output);
+        $this->assertContains("ths scenario has no testrail-id",$output);
         $this->assertContains("second scenario in second feature",$output);
         $this->assertContains("NEXT AVAILABLE TESTRAIL-ID: 4",$output);
         $this->assertEquals(1,$commandTester->getStatusCode());

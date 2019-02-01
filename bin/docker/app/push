@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -e
+
+if [[ -z "$FEATURE_PATH" ]]; then
+    FEATURE_PATH="/behat/features/*"
+fi
+
+if [[ -z "$OUTPUT_PATH" ]]; then
+    OUTPUT_PATH="/home/behat/"
+fi
+
+if [[ -z "$CONFIG_PATH" ]]; then
+    CONFIG_PATH="/behat/"
+fi
+
+if [[ -z "$TESTRAIL_SUITE" ]]; then
+    TESTRAIL_SUITE="master"
+fi
+
+if [[ -z "$TESTRAIL_SERVER" ]]; then
+    TESTRAIL_SERVER="http://localhost"
+fi
+
+if [[ -z "$TESTRAIL_USER" ]]; then
+    TESTRAIL_USER=""
+fi
+
+if [[ -z "$TESTRAIL_PASSWORD" ]]; then
+    TESTRAIL_PASSWORD=""
+fi
+
+if [[ -z "$TESTRAIL_PROJECT" ]]; then
+    TESTRAIL_PROJECT=""
+fi
+
+cd ${CONFIG_PATH}
+behat-logger-cli feature:to:log default --regex="${FEATURE_PATH}" --output="${OUTPUT_PATH}"
+behat-logger-cli testrail:push:cases "$TESTRAIL_SUITE" "${OUTPUT_PATH}/default.json" \
+                                     --server="$TESTRAIL_SERVER" \
+                                     --user="$TESTRAIL_USER" \
+                                     --password="$TESTRAIL_PASSWORD" \
+                                     --project="$TESTRAIL_PROJECT"

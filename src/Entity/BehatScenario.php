@@ -10,7 +10,7 @@ namespace seretos\BehatLoggerExtension\Entity;
 
 
 use JsonSerializable;
-use Symfony\Component\Console\Output\OutputInterface;
+use seretos\BehatLoggerExtension\Exception\TestRailException;
 
 class BehatScenario implements JsonSerializable
 {
@@ -101,7 +101,12 @@ class BehatScenario implements JsonSerializable
         return $this->title;
     }
 
-    public function getTestRailId($regex, OutputInterface $output = null){
+    /**
+     * @param $regex
+     * @return mixed|null
+     * @throws TestRailException
+     */
+    public function getTestRailId($regex){
         $ids = [];
         foreach ($this->getTags() as $tag) {
             preg_match($regex, $tag, $outputVal);
@@ -111,19 +116,9 @@ class BehatScenario implements JsonSerializable
         }
 
         if(count($ids) < 1){
-            if($output !== null) {
-                $output->writeln('<error>the following scenario has no testrail id!</error>');
-                $output->writeln('<error>' . $this->getTitle() . '</error>');
-                $output->writeln('');
-            }
-            return null;
+            throw new TestRailException("ths scenario has no testrail-id: ".$this->getTitle());
         }else if(count($ids) > 1){
-            if($output !== null) {
-                $output->writeln('<error>the following scenario has more than one testrail id!</error>');
-                $output->writeln('<error>' . $this->getTitle() . '</error>');
-                $output->writeln('');
-            }
-            return null;
+            throw new TestRailException("the scenario has more than one testrail id: ".$this->getTitle());
         }
         return $ids[0];
     }

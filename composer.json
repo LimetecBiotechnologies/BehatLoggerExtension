@@ -23,7 +23,9 @@
     "symfony/http-kernel": "^3.3",
     "symfony/finder": "^3.3",
     "symfony/framework-bundle": "^3.3",
-    "seretos/testrail-php-api": "^0.4"
+    "seretos/testrail-php-api": "^1.0",
+    "stecman/symfony-console-completion": "^0.8.0",
+    "ext-json": "^1.5"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.7|^6.0"

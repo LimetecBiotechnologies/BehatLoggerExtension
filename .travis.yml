@@ -8,9 +8,8 @@ matrix:
   - php: 7.1
   - php: 7.2
 script:
-- composer install --no-dev
-- composer dump-autoload --optimize --no-dev --classmap-authoritative
-- phpunit
+- bin/build.sh
+- vendor/bin/phpunit
 
 jobs:
   include:
@@ -18,29 +17,19 @@ jobs:
     php: 7.2
     services:
     - docker
-    before_deploy:
+    script:
     - npm install -g yaml-cli
-    - npm version "$TRAVIS_BRANCH" || echo "set version"
     - yaml set Resources/config/services.yml parameters.behat_logger_version $TRAVIS_BRANCH > Resources/config/services2.yml
     - rm Resources/config/services.yml
     - mv Resources/config/services2.yml Resources/config/services.yml
-    - wget https://github.com/box-project/box2/releases/download/2.7.5/box-2.7.5.phar
-    - mv box-2.7.5.phar box.phar
-    - php -dphar.readonly=0 box.phar build -v
-    - mkdir -p build/behat-logger-cli
-    - cp behat-logger-cli.phar build/behat-logger-cli/
-    - cp package.json build/behat-logger-cli/
-    - cp README.md build/behat-logger-cli/
-    - cd build
-    - tar -zcvf ../behat-logger-cli.tar.gz behat-logger-cli/
-    - cd ..
+    - bin/build.sh dev=false
+#    - bin/docker/build-container.sh
+#    - docker images
+#    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#    - docker tag seretos/behat-logger-cli seretos/behat-logger-cli:$TRAVIS_BRANCH
+#    - docker push seretos/behat-logger-cli:$TRAVIS_BRANCH
     after_deploy:
-    - npm -v
-    - npm install -g npm@latest
-    - npm -v
-    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
-    - npm publish https://github.com/Seretos/BehatLoggerExtension/releases/download/$TRAVIS_BRANCH/behat-logger-cli.tar.gz
-    - docker build -t seretos/behat-logger-cli .
+    - bin/docker/build-container.sh
     - docker images
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - docker tag seretos/behat-logger-cli seretos/behat-logger-cli:$TRAVIS_BRANCH

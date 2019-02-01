@@ -8,31 +8,53 @@ this package also provide commands to validate and merge this json files.
 > INFORMATION: if you want to use the behat logger extension for your project, please read the "PHP Integration" section!
 > The installation section installs only the cli-commands as standalone application
 
-### npm installation
+For users is now a docker-image available. For developers see PHP Integration
 
-```bash
-npm install behat-logger-cli -g
-behat-logger-cli --help
+## Migration from 1.x to 2.x
+
+since the major release 2, the identification of tests for synchronization has changed.
+In version 1 the title of the scenario was used for synchronization.
+in this release, an id will used, given by an behat-tag.
+every test requires an unique identifier tag. for example "@testrail-case-1,@testrail-case-2, e.t.c."
+update your dependency to the last 1.x version and add the following properties to your .testrail.yml
+
+```yml
+api:
+    ...
+    identifier_tag_field: yourNewIdentifierField
 ```
 
-### manual installation
-
-1. download the latest behat-logger-cli.phar from the [github releases page](https://github.com/Seretos/BehatLoggerExtension/releases)
-2. make the phar-file executable
-
-```bash
-chmod u+x behat-logger-cli.phar
-php behat-logger-cli.phar --help
-# optional:
-mv behat-logger-cli.phar behat-logger-cli
-mv behat-logger-cli /usr/local/bin/
-behat-logger-cli --help
-```
+execute the testrail:push:cases command to add all the ids to your cases in testrail.
+Now you can update to 2.x (but some .testrail.yml properties has changed!!!)
 
 ### docker image
 
 ```bash
-docker run -v /path/to/logs/:/behat/ seretos/behat-logger-cli --help
+docker run -v /path/to/project/:/behat/ seretos/behat-logger-cli behat-logger-cli list
+```
+
+add the docker-container to your docker-compose.yml
+```yml
+version: '3.7'
+
+services:
+  features-push:
+    image: seretos/behat-logger-cli
+    command: push
+    volumes:
+      - ./:/behat/
+    environment:
+      TESTRAIL_SERVER: http://testrail:80
+      TESTRAIL_USER: yourTestrailLogin
+      TESTRAIL_PASSWORD: yourTestrailPassword
+      TESTRAIL_PROJECT: yourTestrailProject
+      TESTRAIL_SUITE: yourTestrailSuite
+
+  features-validate:
+    image: seretos/behat-logger-cli
+    command: validate
+    volumes:
+      - ./:/behat/
 ```
 
 ## PHP Integration
@@ -95,7 +117,7 @@ behat-logger-cli testrail:push:cases testRailSuiteName actual.json
 
 send a json-result to testrail and create environment configurations:
 ```bash
-behat-logger-cli testrail:push:configs testRailSuiteName actual.json
+behat-logger-cli testrail:push:configs actual.json
 ```
 
 send a json-result to testrail and create results
@@ -112,8 +134,10 @@ api:
   project: youtProject
   template: Test Case (Steps)
   type: Automated
-  identifier: custom_preconds
-  run_group_field: custom_automation_type
+  title_field: custom_preconds
+  group_field: custom_automation_type
+  identifier_field: custom_identifier
+  identifier_regex: /^testrail-case-([0-9]*)$/
 
 # set field an priorities on specific tags
 fields:

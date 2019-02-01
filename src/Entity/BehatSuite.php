@@ -56,6 +56,14 @@ class BehatSuite implements JsonSerializable
         return $this->name;
     }
 
+    public function getScenarioCount(){
+        $cnt = 0;
+        foreach($this->features as $feature){
+            $cnt += count($feature->getScenarios());
+        }
+        return $cnt;
+    }
+
     /**
      * Specify data which should be serialized to JSON
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php

@@ -73,17 +73,17 @@ abstract class AbstractTestRail
     /**
      * @var string
      */
+    protected $titleField;
+    /**
+     * @var string
+     */
     protected $identifierField;
     /**
      * @var string
      */
-    protected $identifierTagField;
-    /**
-     * @var string
-     */
-    protected $identifierTagRegex;
+    protected $identifierRegex;
 
-    public function __construct(Client $client, string $projectName, string $suiteName, array $customFieldConfig, array $priorityConfig, string $identifierField, string $identifierTagRegex = null, string $identifierTagField = null)
+    public function __construct(Client $client, string $projectName, ?string $suiteName, array $customFieldConfig, array $priorityConfig, string $titleField = null, string $identifierRegex = null, string $identifierField = null)
     {
         $this->projectApi = $client->projects();
         $this->suiteApi = $client->suites();
@@ -97,10 +97,10 @@ abstract class AbstractTestRail
         $this->setSuite($suiteName);
         $this->customFieldConfig = $customFieldConfig;
         $this->priorityConfig = $priorityConfig;
-        $this->identifierField = $identifierField;
+        $this->titleField = $titleField;
 
-        $this->identifierTagField = $identifierTagField;
-        $this->identifierTagRegex = $identifierTagRegex;
+        $this->identifierField = $identifierField;
+        $this->identifierRegex = $identifierRegex;
 
         $this->typeId = null;
     }
@@ -119,34 +119,16 @@ abstract class AbstractTestRail
     /**
      * @param string $suiteName
      */
-    protected function setSuite(string $suiteName){
+    protected function setSuite(?string $suiteName){
+        if($suiteName === null){
+            $this->suiteId = 0;
+            return;
+        }
         $suite = $this->suiteApi->findByName($this->projectId,$suiteName);
         if($suite === []){
             $suite = $this->suiteApi->create($this->projectId,$suiteName);
         }
         $this->suiteId = $suite['id'];
-    }
-
-    /**
-     * @param string $sectionString
-     * @return int
-     * @throws TestRailException
-     */
-    protected function getCaseSection(string $sectionString){
-        $sections = explode('=>',$sectionString);
-        $parentId = null;
-        $sec = [];
-        foreach($sections as $section){
-            $sec = $this->sectionApi->findByNameAndParent($this->projectId, $this->suiteId,$section,$parentId);
-            if(!isset($sec['id'])){
-                $sec = $this->sectionApi->create($this->projectId,$this->suiteId,$section,null,$parentId);
-            }
-            $parentId = $sec['id'];
-        }
-        if(!isset($sec['id'])){
-            throw new TestRailException('section not found!');
-        }
-        return $sec['id'];
     }
 
     /**

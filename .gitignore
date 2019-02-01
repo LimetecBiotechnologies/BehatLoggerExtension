@@ -2,10 +2,6 @@
 composer.lock
 vendor/
 build
-test.php
-test.json
-example.json
-box.phar
-behat-logger-cli.phar
-npm-debug.log
-.testrail.yml
+bin/docker/behat-logger-cli/
+./.testrail.yml
+features/
