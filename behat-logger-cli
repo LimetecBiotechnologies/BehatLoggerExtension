@@ -10,6 +10,7 @@
 use seretos\BehatLoggerExtension\Command\CombineLogsCommand;
 use seretos\BehatLoggerExtension\Command\FeatureToLogCommand;
 use seretos\BehatLoggerExtension\Command\TestRailCasePushCommand;
+use seretos\BehatLoggerExtension\Command\TestRailCheckSuiteExistsCommand;
 use seretos\BehatLoggerExtension\Command\TestRailConfigPushCommand;
 use seretos\BehatLoggerExtension\Command\TestRailCopySuiteCommand;
 use seretos\BehatLoggerExtension\Command\TestRailResultPushCommand;
@@ -58,6 +59,9 @@ try {
     $validateScenarioIdCommand = new ValidateScenarioIdCommand();
     $validateScenarioIdCommand->setContainer($container);
 
+    $testRailSuiteCheckCommand = new TestRailCheckSuiteExistsCommand();
+    $testRailSuiteCheckCommand->setContainer($container);
+
     $app = new Application('behat-logger-cli',$container->getParameter('behat_logger_version'));
     $app->addCommands([new CompletionCommand(),
         $combineLogsCommand,
@@ -67,7 +71,8 @@ try {
         $testRailResultPushCommand,
         $testRailConfigPushCommand,
         $testRailCopySuiteCommand,
-        $validateScenarioIdCommand]);
+        $validateScenarioIdCommand,
+        $testRailSuiteCheckCommand]);
 
     $app->run();
 }catch (Exception $e){
