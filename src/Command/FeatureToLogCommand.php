@@ -58,8 +58,9 @@ class FeatureToLogCommand extends ContainerAwareCommand
             }else{
                 $language = $feature->getLanguage();
 
-                if(!$behatSuite->hasFeature($file)){
-                    $behatFeature = $factory->createFeature($file,$feature->getTitle(),$feature->getDescription(),$language);
+                $featureFile = $this->getRelativePath(rtrim(getcwd(),'/').'/',$file);
+                if(!$behatSuite->hasFeature($featureFile)){
+                    $behatFeature = $factory->createFeature($featureFile,$feature->getTitle(),$feature->getDescription(),$language);
                     $behatSuite->addFeature($behatFeature);
                 }else{
                     $output->writeln('<error>the feature file '.$file.' is defined more then once</error>');
@@ -170,5 +171,14 @@ EOT
             }
         }
         return $files;
+    }
+
+    private function getRelativePath($base, $path) {
+        // Detect directory separator
+        $separator = substr($base, 0, 1);
+        $base = array_slice(explode($separator, rtrim($base,$separator)),1);
+        $path = array_slice(explode($separator, rtrim($path,$separator)),1);
+
+        return implode($separator, array_slice($path, count($base)));
     }
 }

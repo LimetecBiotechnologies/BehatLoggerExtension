@@ -110,7 +110,7 @@ class BehatLogFormatter implements Formatter
      * @param FeatureTested $event
      */
     public function onBeforeFeatureTested(FeatureTested $event) {
-        $feature = $this->factory->createFeature(realpath($event->getFeature()->getFile()),
+        $feature = $this->factory->createFeature($event->getFeature()->getFile(),
             $event->getFeature()->getTitle(),
             $event->getFeature()->getDescription(),
             $event->getFeature()->getLanguage());
@@ -135,7 +135,7 @@ class BehatLogFormatter implements Formatter
             $event->getScenario(),
             $event->getFeature()->getBackground());
 
-        $feature = $this->currentSuite->getFeature(realpath($event->getFeature()->getFile()));
+        $feature = $this->currentSuite->getFeature($event->getFeature()->getFile());
 
         $feature->addScenario($scenario);
         $this->currentScenario = $scenario;
@@ -205,7 +205,7 @@ class BehatLogFormatter implements Formatter
             $event->getOutline(),
             $event->getFeature()->getBackground());
 
-        $feature = $this->currentSuite->getFeature(realpath($event->getFeature()->getFile()));
+        $feature = $this->currentSuite->getFeature($event->getFeature()->getFile());
 
         $feature->addScenario($scenario);
         $this->currentScenario = $scenario;
