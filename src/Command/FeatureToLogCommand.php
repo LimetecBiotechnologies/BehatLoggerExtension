@@ -67,6 +67,11 @@ class FeatureToLogCommand extends ContainerAwareCommand
                 }
 
                 foreach($feature->getScenarios() as $scenario){
+                    if(!$scenario->getTitle()){
+                        $output->writeln('<error>one scenario in your feature file has no title! '.$feature->getFile().'</error>');
+                        return -1;
+                    }
+
                     if(!$behatFeature->hasScenario($scenario->getTitle())){
                         $tags = $scenario->getTags();
                         if(is_array($feature->getTags())) {
