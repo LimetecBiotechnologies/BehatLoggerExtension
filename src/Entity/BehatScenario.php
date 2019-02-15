@@ -31,7 +31,7 @@ class BehatScenario implements JsonSerializable
      */
     private $results;
 
-    public function __construct(string $title, array $tags)
+    public function __construct(string $title = null, array $tags = [])
     {
         $this->title = $title;
         $this->tags = $tags;

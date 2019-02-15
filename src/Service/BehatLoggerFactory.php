@@ -45,7 +45,7 @@ class BehatLoggerFactory
      * @param array $tags
      * @return BehatScenario
      */
-    public function createScenario(string $title, array $tags = []){
+    public function createScenario(string $title = null, array $tags = []){
         return new BehatScenario($title, $tags);
     }
 
