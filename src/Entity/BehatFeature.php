@@ -34,7 +34,7 @@ class BehatFeature implements JsonSerializable
      */
     private $scenarios;
 
-    public function __construct(string $filename, string $title, string $description = null, string $language = "en")
+    public function __construct(string $filename, string $title = null, string $description = null, string $language = "en")
     {
         $this->filename = $filename;
         $this->title = $title;
