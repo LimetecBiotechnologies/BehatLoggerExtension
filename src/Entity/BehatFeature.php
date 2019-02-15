@@ -72,7 +72,11 @@ class BehatFeature implements JsonSerializable
     }
 
     public function addScenario(BehatScenario $scenario){
-        $this->scenarios[$scenario->getTitle()] = $scenario;
+        $key = $scenario->getTitle();
+        if($scenario->getTitle() === null || $scenario->getTitle() === ''){
+            $key = count($this->scenarios);
+        }
+        $this->scenarios[$key] = $scenario;
     }
 
     public function getScenario(string $title){

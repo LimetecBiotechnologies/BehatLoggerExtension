@@ -36,7 +36,7 @@ class BehatLoggerFactory
      * @param string $language
      * @return BehatFeature
      */
-    public function createFeature(string $filename, string $title, string $description = null, string $language = 'en'){
+    public function createFeature(string $filename, string $title = null, string $description = null, string $language = 'en'){
         return new BehatFeature($filename, $title, $description, $language);
     }
 
