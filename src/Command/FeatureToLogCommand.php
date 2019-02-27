@@ -58,7 +58,7 @@ class FeatureToLogCommand extends ContainerAwareCommand
             }else{
                 $language = $feature->getLanguage();
 
-                $featureFile = $this->getRelativePath(rtrim(getcwd(),'/').'/',$file);
+                $featureFile = $factory->getRelativePath(rtrim(getcwd(),'/').'/',$file);
                 if(!$behatSuite->hasFeature($featureFile)){
                     $behatFeature = $factory->createFeature($featureFile,$feature->getTitle(),$feature->getDescription(),$language);
                     $behatSuite->addFeature($behatFeature);
@@ -171,14 +171,5 @@ EOT
             }
         }
         return $files;
-    }
-
-    private function getRelativePath($base, $path) {
-        // Detect directory separator
-        $separator = substr($base, 0, 1);
-        $base = array_slice(explode($separator, rtrim($base,$separator)),1);
-        $path = array_slice(explode($separator, rtrim($path,$separator)),1);
-
-        return implode($separator, array_slice($path, count($base)));
     }
 }

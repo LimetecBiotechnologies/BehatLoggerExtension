@@ -1186,4 +1186,18 @@ class BehatLoggerFactory
         $parser = new Parser($lexer);
         return $parser;
     }
+
+    public function getRelativePath($base, $path) {
+        // Detect directory separator
+        $resultPath = $path;
+        $separator = substr($base, 0, 1);
+        $base = array_slice(explode($separator, rtrim($base,$separator)),1);
+        $path = array_slice(explode($separator, rtrim($path,$separator)),1);
+
+        $result = implode($separator, array_slice($path, count($base)));
+        if($result === ''){
+            $result = $resultPath;
+        }
+        return $result;
+    }
 }
