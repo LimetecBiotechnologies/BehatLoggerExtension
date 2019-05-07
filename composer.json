@@ -1,12 +1,12 @@
 {
-  "name": "seretos/behat-logger-extension",
+  "name": "limetecbiotechnologies/behat-logger-extension",
   "description": "log the behat execution into json result",
   "keywords": [
     "behat",
     "logger",
     "extension"
   ],
-  "homepage": "https://github.com/Seretos/BehatLoggerExtension",
+  "homepage": "https://github.com/LimetecBiotechnologies/BehatLoggerExtension",
   "license": "MIT",
   "type": "library",
   "authors": [
@@ -23,7 +23,7 @@
     "symfony/http-kernel": "^3.3|^4.2",
     "symfony/finder": "^3.3|^4.2",
     "symfony/framework-bundle": "^3.3|^4.2",
-    "seretos/testrail-php-api": "^1.0",
+    "limetecbiotechnologies/testrail-php-api": "^1.0",
     "stecman/symfony-console-completion": "^0.8.0",
     "ext-json": "^1.5"
   },
