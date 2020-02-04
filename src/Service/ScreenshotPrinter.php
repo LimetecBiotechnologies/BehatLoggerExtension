@@ -12,6 +12,9 @@ namespace seretos\BehatLoggerExtension\Service;
 class ScreenshotPrinter
 {
     public function takeScreenshot($path, $prefix, $data){
+        if(!file_exists($path)){
+            mkdir($path, 0777, true);
+        }
         $filename = sprintf('%s_%s_%s.%s', $prefix, date('c'), uniqid('', true), 'png');
         file_put_contents($path . $filename, $data);
         return $filename;
